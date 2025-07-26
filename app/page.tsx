@@ -297,6 +297,7 @@ export default function HomePage() {
                 <CardHeader className="pb-2 px-3 pt-3">
                   <div className="flex items-start justify-between">
                     <div className="min-w-0 flex-1">
+                      
                       {/* Título clicável que abre o modal */}
                       <ProviderDetailsModal
                         provider={prestador}
