@@ -34,13 +34,6 @@ Para realizar toda a gestão é necessário o login que será feito apenas pelo 
 - **Botão "Sair"** com logout funcional
 - **Links internos** redirecionam para dashboard após login
 
-## **Credenciais de Teste**
-
-```plaintext
-Admin: admin@prestadores.com / admin123
-Gestor: gestor@prestadores.com / gestor123
-```
-
 ## **Estrutura de Banco**
 
 - **Tabela de usuários** com hash de senhas
