@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useMemo, useEffect } from "react"
-import { Search, Phone, Mail, Globe, Instagram, Facebook, Youtube, Star, MapPin, Sparkles, LogIn } from "lucide-react"
+import { Search, Phone, Mail, Globe, Instagram, Facebook, Youtube, Star, MapPin, Sparkles, LogIn, InstagramIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -15,6 +15,7 @@ import { getProviders } from "@/lib/actions/providers"
 import { createRating } from "@/lib/actions/ratings"
 import { Pagination } from "@/components/pagination"
 import logoQuemIndicar  from "../public/quemIndicarLogov2.png"
+import { ProviderDetailsModal } from "@/components/provider-details-modal"
 
 interface Category {
   id: number
@@ -44,6 +45,8 @@ interface Provider {
   active: boolean
   averageRating: number
   ratingsCount: number
+  createdAt: Date
+  updatedAt: Date
 }
 
 export default function HomePage() {
@@ -294,9 +297,16 @@ export default function HomePage() {
                 <CardHeader className="pb-2 px-3 pt-3">
                   <div className="flex items-start justify-between">
                     <div className="min-w-0 flex-1">
-                      <CardTitle className="text-sm group-hover:text-indigo-600 transition-colors duration-300 truncate">
-                        {prestador.title}
-                      </CardTitle>
+                      {/* Título clicável que abre o modal */}
+                      <ProviderDetailsModal
+                        provider={prestador}
+                        categoryInfo={categoriaInfo}
+                        onRatingSubmit={handleRatingSubmit}
+                      >
+                        <CardTitle className="text-sm group-hover:text-indigo-600 transition-colors duration-300 truncate cursor-pointer hover:underline">
+                          {prestador.title}
+                        </CardTitle>
+                      </ProviderDetailsModal>                        
                       <CardDescription className="text-xs font-medium text-gray-600 truncate">
                         {prestador.subtitle}
                       </CardDescription>
@@ -355,13 +365,15 @@ export default function HomePage() {
                   {/* Redes Sociais e Avaliação - versão compacta */}
                   <div className="flex justify-between items-center gap-2 pt-2 border-t border-gray-100">
                     <div className="flex gap-1">
-                      {prestador.instagram && (
-                        <Button
-                          size="sm"
-                          className="bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white border-0 transition-all duration-300 hover:scale-110 shadow-lg h-6 w-6 p-0"
+                      {prestador.instagram && (                       
+                        <a
+                          href={`https://www.instagram.com/${prestador.instagram}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-purple-600 hover:underline font-medium truncate"
                         >
-                          <Instagram className="w-3 h-3" />
-                        </Button>
+                          <Instagram className="w-6 h-6" />
+                        </a>
                       )}
                       {prestador.facebook && (
                         <Button
