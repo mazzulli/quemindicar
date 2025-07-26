@@ -160,7 +160,7 @@ export default function LoginPage() {
             </form>
 
             {/* Credenciais de Teste */}
-            <div className="mt-6 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-200">
+            {/* <div className="mt-6 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-200">
               <h3 className="text-sm font-semibold text-blue-800 mb-2">Credenciais de Teste:</h3>
               <div className="space-y-1 text-xs text-blue-700">
                 <p>
@@ -170,7 +170,7 @@ export default function LoginPage() {
                   <strong>Gestor:</strong> gestor@prestadores.com / gestor123
                 </p>
               </div>
-            </div>
+            </div> */}
           </CardContent>
         </Card>
 

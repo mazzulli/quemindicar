@@ -13,6 +13,8 @@ import { RatingModal } from "@/components/rating-modal"
 import { getCategories } from "@/lib/actions/categories"
 import { getProviders } from "@/lib/actions/providers"
 import { createRating } from "@/lib/actions/ratings"
+import { Pagination } from "@/components/pagination"
+import logoQuemIndicar  from "../public/quemIndicarLogov2.png"
 
 interface Category {
   id: number
@@ -47,13 +49,22 @@ interface Provider {
 export default function HomePage() {
   const [filtroNome, setFiltroNome] = useState("")
   const [filtroCategoria, setFiltroCategoria] = useState("all")
-  const [categories, setCategories] = useState<Category[]>([])
-  const [providers, setProviders] = useState<Provider[]>([])
+  const [categories, setCategories] = useState<Category[] | undefined>([])
+  const [providers, setProviders] = useState<Provider[] | undefined>([])
   const [loading, setLoading] = useState(true)
+
+  // Estados da paginação
+  const [currentPage, setCurrentPage] = useState(1)
+  const [itemsPerPage, setItemsPerPage] = useState(18) // Padrão para 6 cards por linha em telas grandes
 
   useEffect(() => {
     loadData()
   }, [])
+
+  // Reset para primeira página quando filtros mudam
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [filtroNome, filtroCategoria])
 
   const loadData = async () => {
     try {
@@ -74,7 +85,7 @@ export default function HomePage() {
   }
 
   const prestadoresFiltrados = useMemo(() => {
-    return providers.filter((prestador) => {
+    return providers?.filter((prestador) => {
       const matchNome =
         prestador.title.toLowerCase().includes(filtroNome.toLowerCase()) ||
         (prestador.subtitle && prestador.subtitle.toLowerCase().includes(filtroNome.toLowerCase()))
@@ -82,6 +93,24 @@ export default function HomePage() {
       return matchNome && matchCategoria
     })
   }, [providers, filtroNome, filtroCategoria])
+
+  // Cálculos da paginação
+  const totalItems = prestadoresFiltrados?.length || 0
+  const totalPages = Math.ceil(totalItems / itemsPerPage)
+  const startIndex = (currentPage - 1) * itemsPerPage
+  const endIndex = startIndex + itemsPerPage
+  const prestadoresPaginados = prestadoresFiltrados?.slice(startIndex, endIndex)
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page)
+    // Scroll suave para o topo da lista
+    window.scrollTo({ top: 0, behavior: "smooth" })
+  }
+
+  const handleItemsPerPageChange = (newItemsPerPage: number) => {
+    setItemsPerPage(newItemsPerPage)
+    setCurrentPage(1) // Reset para primeira página
+  }
 
   const getCategoriaInfo = (categoryName: string) => {
     // Map category names to colors and icons
@@ -138,12 +167,8 @@ export default function HomePage() {
         <div className="container mx-auto px-4 py-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
-                <Sparkles className="w-6 h-6 text-white" />
-              </div>
-              <div>
-                <h1 className="text-3xl font-bold text-white">Quem Indicar?</h1>
-                <p className="text-white/80 text-sm">Encontre os melhores profissionais da sua região</p>
+              <div className="w-340 h-240 flex items-center justify-center backdrop-blur-sm">
+                <Image src={logoQuemIndicar} alt="Logo Quem Indicar" width={340} height={240} className="mr-2" />                
               </div>
             </div>
             <div className="flex gap-3">
@@ -198,7 +223,7 @@ export default function HomePage() {
                       <span>Todas as categorias</span>
                     </div>
                   </SelectItem>
-                  {categories.map((categoria) => {
+                  {categories?.map((categoria) => {
                     const categoryInfo = getCategoriaInfo(categoria.name)
                     return (
                       <SelectItem key={categoria.id} value={categoria.name} className="rounded-lg">
@@ -213,11 +238,29 @@ export default function HomePage() {
               </Select>
             </div>
           </div>
+
+          {/* Informações dos resultados */}
+          <div className="mt-6 pt-6 border-t border-gray-200">
+            <div className="flex items-center justify-between text-sm text-gray-600">
+              <span>
+                {totalItems === 0
+                  ? "Nenhum prestador encontrado"
+                  : totalItems === 1
+                    ? "1 prestador encontrado"
+                    : `${totalItems} prestadores encontrados`}
+              </span>
+              {totalItems > 0 && (
+                <span>
+                  Página {currentPage} de {totalPages}
+                </span>
+              )}
+            </div>
+          </div>
         </div>
 
-        {/* Lista de Prestadores com animações */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {prestadoresFiltrados.map((prestador, index) => {
+        {/* Lista de Prestadores com cards menores - até 6 por linha */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
+          {prestadoresPaginados?.map((prestador, index) => {
             const categoriaInfo = getCategoriaInfo(prestador.category.name)
             return (
               <Card
@@ -235,70 +278,73 @@ export default function HomePage() {
                     fill
                     className="object-cover group-hover:scale-110 transition-transform duration-500"
                   />
-                  <div className="absolute top-4 right-4">
-                    <Badge className={`${categoriaInfo.cor} text-white border-0 shadow-lg animate-bounce-in`}>
+                  <div className="absolute top-2 right-2">
+                    <Badge className={`${categoriaInfo.cor} text-white border-0 shadow-lg animate-bounce-in text-xs`}>
                       <span className="mr-1">{categoriaInfo.icon}</span>
-                      {prestador.category.name}
+                      <span className="hidden sm:inline">{prestador.category.name}</span>
                     </Badge>
                   </div>
-                  <div className="absolute bottom-4 left-4 flex items-center gap-1 bg-white/90 backdrop-blur-sm rounded-full px-3 py-1 shadow-lg">
-                    <Star className="w-4 h-4 text-yellow-500 fill-current" />
-                    <span className="text-sm font-semibold">{prestador.averageRating.toFixed(1)}</span>
+                  <div className="absolute bottom-2 left-2 flex items-center gap-1 bg-white/90 backdrop-blur-sm rounded-full px-2 py-1 shadow-lg">
+                    <Star className="w-3 h-3 text-yellow-500 fill-current" />
+                    <span className="text-xs font-semibold">{prestador.averageRating.toFixed(1)}</span>
                     <span className="text-xs text-gray-600">({prestador.ratingsCount})</span>
                   </div>
                 </div>
 
-                <CardHeader className="pb-3">
+                <CardHeader className="pb-2 px-3 pt-3">
                   <div className="flex items-start justify-between">
-                    <div>
-                      <CardTitle className="text-xl group-hover:text-indigo-600 transition-colors duration-300">
+                    <div className="min-w-0 flex-1">
+                      <CardTitle className="text-sm group-hover:text-indigo-600 transition-colors duration-300 truncate">
                         {prestador.title}
                       </CardTitle>
-                      <CardDescription className="text-sm font-medium text-gray-600">
+                      <CardDescription className="text-xs font-medium text-gray-600 truncate">
                         {prestador.subtitle}
                       </CardDescription>
                     </div>
                   </div>
                 </CardHeader>
 
-                <CardContent className="space-y-4">
-                  <p className="text-sm text-gray-600 line-clamp-3 leading-relaxed">{prestador.description}</p>
+                <CardContent className="space-y-3 px-3 pb-3">
+                  <p className="text-xs text-gray-600 line-clamp-2 leading-relaxed">{prestador.description}</p>
 
                   {prestador.address && (
-                    <div className="flex items-center gap-2 text-sm text-gray-500">
-                      <MapPin className="w-4 h-4" />
+                    <div className="flex items-center gap-1 text-xs text-gray-500">
+                      <MapPin className="w-3 h-3 flex-shrink-0" />
                       <span className="truncate">{prestador.address}</span>
                     </div>
                   )}
 
-                  {/* Contatos com ícones coloridos */}
-                  <div className="space-y-3 pt-2 border-t border-gray-100">
-                    <div className="flex items-center gap-3 text-sm group/contact hover:bg-green-50 p-2 rounded-lg transition-colors">
-                      <div className="w-8 h-8 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center">
-                        <Phone className="w-4 h-4 text-white" />
+                  {/* Contatos com ícones coloridos - versão compacta */}
+                  <div className="space-y-2 pt-2 border-t border-gray-100">
+                    <div className="flex items-center gap-2 text-xs group/contact hover:bg-green-50 p-1 rounded-lg transition-colors">
+                      <div className="w-5 h-5 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center flex-shrink-0">
+                        <Phone className="w-2.5 h-2.5 text-white" />
                       </div>
-                      <span className="font-medium">{prestador.phone}</span>
+                      <span className="font-medium truncate">{prestador.phone}</span>
                     </div>
 
-                    <div className="flex items-center gap-3 text-sm group/contact hover:bg-blue-50 p-2 rounded-lg transition-colors">
-                      <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full flex items-center justify-center">
-                        <Mail className="w-4 h-4 text-white" />
+                    <div className="flex items-center gap-2 text-xs group/contact hover:bg-blue-50 p-1 rounded-lg transition-colors">
+                      <div className="w-5 h-5 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full flex items-center justify-center flex-shrink-0">
+                        <Mail className="w-2.5 h-2.5 text-white" />
                       </div>
-                      <a href={`mailto:${prestador.email}`} className="text-blue-600 hover:underline font-medium">
+                      <a
+                        href={`mailto:${prestador.email}`}
+                        className="text-blue-600 hover:underline font-medium truncate"
+                      >
                         {prestador.email}
                       </a>
                     </div>
 
                     {prestador.website && (
-                      <div className="flex items-center gap-3 text-sm group/contact hover:bg-purple-50 p-2 rounded-lg transition-colors">
-                        <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full flex items-center justify-center">
-                          <Globe className="w-4 h-4 text-white" />
+                      <div className="flex items-center gap-2 text-xs group/contact hover:bg-purple-50 p-1 rounded-lg transition-colors">
+                        <div className="w-5 h-5 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full flex items-center justify-center flex-shrink-0">
+                          <Globe className="w-2.5 h-2.5 text-white" />
                         </div>
                         <a
                           href={prestador.website}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-purple-600 hover:underline font-medium"
+                          className="text-purple-600 hover:underline font-medium truncate"
                         >
                           Visitar site
                         </a>
@@ -306,31 +352,31 @@ export default function HomePage() {
                     )}
                   </div>
 
-                  {/* Redes Sociais e Avaliação */}
-                  <div className="flex justify-between items-center gap-2 pt-3 border-t border-gray-100">
-                    <div className="flex gap-2">
+                  {/* Redes Sociais e Avaliação - versão compacta */}
+                  <div className="flex justify-between items-center gap-2 pt-2 border-t border-gray-100">
+                    <div className="flex gap-1">
                       {prestador.instagram && (
                         <Button
                           size="sm"
-                          className="bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white border-0 transition-all duration-300 hover:scale-110 shadow-lg"
+                          className="bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white border-0 transition-all duration-300 hover:scale-110 shadow-lg h-6 w-6 p-0"
                         >
-                          <Instagram className="w-4 h-4" />
+                          <Instagram className="w-3 h-3" />
                         </Button>
                       )}
                       {prestador.facebook && (
                         <Button
                           size="sm"
-                          className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white border-0 transition-all duration-300 hover:scale-110 shadow-lg"
+                          className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white border-0 transition-all duration-300 hover:scale-110 shadow-lg h-6 w-6 p-0"
                         >
-                          <Facebook className="w-4 h-4" />
+                          <Facebook className="w-3 h-3" />
                         </Button>
                       )}
                       {prestador.youtube && (
                         <Button
                           size="sm"
-                          className="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white border-0 transition-all duration-300 hover:scale-110 shadow-lg"
+                          className="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white border-0 transition-all duration-300 hover:scale-110 shadow-lg h-6 w-6 p-0"
                         >
-                          <Youtube className="w-4 h-4" />
+                          <Youtube className="w-3 h-3" />
                         </Button>
                       )}
                     </div>
@@ -352,7 +398,22 @@ export default function HomePage() {
           })}
         </div>
 
-        {prestadoresFiltrados.length === 0 && (
+        {/* Paginação */}
+        {totalItems > 0 && (
+          <div className="mt-8">
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              itemsPerPage={itemsPerPage}
+              totalItems={totalItems}
+              onPageChange={handlePageChange}
+              onItemsPerPageChange={handleItemsPerPageChange}
+              itemsPerPageOptions={[12, 18, 24, 30, 48, 60]}
+            />
+          </div>
+        )}
+
+        {prestadoresFiltrados?.length === 0 && (
           <div className="text-center py-16 animate-fade-in">
             <div className="w-24 h-24 bg-gradient-to-r from-gray-200 to-gray-300 rounded-full flex items-center justify-center mx-auto mb-6">
               <Search className="w-12 h-12 text-gray-400" />

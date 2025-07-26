@@ -109,10 +109,10 @@ export function RatingModal({ prestador, onRatingSubmit }: RatingModalProps) {
       <DialogTrigger asChild>
         <Button
           size="sm"
-          className="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white border-0 transition-all duration-300 hover:scale-105 shadow-lg"
+          className="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white border-0 transition-all duration-300 hover:scale-105 shadow-lg text-xs h-6 px-2"
         >
-          <Star className="w-4 h-4 mr-2" />
-          Classificar
+          <Star className="w-3 h-3 mr-1" />
+          Avaliar
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-md bg-white/95 backdrop-blur-sm border-2 border-white/50 shadow-2xl rounded-2xl">
