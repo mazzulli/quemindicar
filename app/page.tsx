@@ -1,0 +1,367 @@
+"use client"
+
+import { useState, useMemo, useEffect } from "react"
+import { Search, Phone, Mail, Globe, Instagram, Facebook, Youtube, Star, MapPin, Sparkles, LogIn } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import Link from "next/link"
+import Image from "next/image"
+import { RatingModal } from "@/components/rating-modal"
+import { getCategories } from "@/lib/actions/categories"
+import { getProviders } from "@/lib/actions/providers"
+import { createRating } from "@/lib/actions/ratings"
+
+interface Category {
+  id: number
+  name: string
+  providersCount: number
+}
+
+interface Provider {
+  id: number
+  title: string
+  subtitle: string | null
+  category: {
+    id: number
+    name: string
+  }
+  description: string | null
+  photoUrl: string | null
+  phone: string
+  email: string
+  address: string | null
+  website: string | null
+  instagram: string | null
+  facebook: string | null
+  youtube: string | null
+  linkedin: string | null
+  tiktok: string | null
+  active: boolean
+  averageRating: number
+  ratingsCount: number
+}
+
+export default function HomePage() {
+  const [filtroNome, setFiltroNome] = useState("")
+  const [filtroCategoria, setFiltroCategoria] = useState("all")
+  const [categories, setCategories] = useState<Category[]>([])
+  const [providers, setProviders] = useState<Provider[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    loadData()
+  }, [])
+
+  const loadData = async () => {
+    try {
+      const [categoriesResult, providersResult] = await Promise.all([getCategories(), getProviders({ active: true })])
+
+      if (categoriesResult.success) {
+        setCategories(categoriesResult.data)
+      }
+
+      if (providersResult.success) {
+        setProviders(providersResult.data)
+      }
+    } catch (error) {
+      console.error("Error loading data:", error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const prestadoresFiltrados = useMemo(() => {
+    return providers.filter((prestador) => {
+      const matchNome =
+        prestador.title.toLowerCase().includes(filtroNome.toLowerCase()) ||
+        (prestador.subtitle && prestador.subtitle.toLowerCase().includes(filtroNome.toLowerCase()))
+      const matchCategoria = filtroCategoria === "all" || prestador.category.name === filtroCategoria
+      return matchNome && matchCategoria
+    })
+  }, [providers, filtroNome, filtroCategoria])
+
+  const getCategoriaInfo = (categoryName: string) => {
+    // Map category names to colors and icons
+    const categoryMap: Record<string, { cor: string; icon: string }> = {
+      "Beauty & Aesthetics": { cor: "bg-gradient-to-r from-pink-500 to-rose-500", icon: "✨" },
+      "Health & Wellness": { cor: "bg-gradient-to-r from-green-500 to-emerald-500", icon: "🏃‍♂️" },
+      Education: { cor: "bg-gradient-to-r from-blue-500 to-cyan-500", icon: "📚" },
+      Technology: { cor: "bg-gradient-to-r from-purple-500 to-indigo-500", icon: "💻" },
+      Consulting: { cor: "bg-gradient-to-r from-orange-500 to-yellow-500", icon: "💼" },
+      Design: { cor: "bg-gradient-to-r from-violet-500 to-purple-500", icon: "🎨" },
+      Photography: { cor: "bg-gradient-to-r from-teal-500 to-cyan-500", icon: "📸" },
+      Events: { cor: "bg-gradient-to-r from-red-500 to-pink-500", icon: "🎉" },
+    }
+
+    return categoryMap[categoryName] || { cor: "bg-gradient-to-r from-gray-500 to-gray-600", icon: "📋" }
+  }
+
+  const handleRatingSubmit = async (prestadorId: number, rating: number, comment: string, reviewerName: string) => {
+    try {
+      const result = await createRating({
+        providerId: prestadorId,
+        rating,
+        comment,
+        reviewerName,
+      })
+
+      if (result.success) {
+        // Reload providers to get updated ratings
+        const providersResult = await getProviders({ active: true })
+        if (providersResult.success) {
+          setProviders(providersResult.data)
+        }
+      }
+    } catch (error) {
+      console.error("Error submitting rating:", error)
+    }
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600 font-medium">Carregando prestadores...</p>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
+      {/* Header com gradiente vibrante */}
+      <header className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 shadow-xl">
+        <div className="container mx-auto px-4 py-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
+                <Sparkles className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h1 className="text-3xl font-bold text-white">Quem Indicar?</h1>
+                <p className="text-white/80 text-sm">Encontre os melhores profissionais da sua região</p>
+              </div>
+            </div>
+            <div className="flex gap-3">
+              <Link href="/login">
+                <Button
+                  variant="secondary"
+                  className="bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur-sm transition-all duration-300 hover:scale-105"
+                >
+                  <LogIn className="w-4 h-4 mr-2" />
+                  Login
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <main className="container mx-auto px-4 py-8">
+        {/* Filtros com design moderno */}
+        <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/50 p-8 mb-8 animate-fade-in">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
+              <Search className="w-4 h-4 text-white" />
+            </div>
+            <h2 className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+              Encontre seu profissional ideal
+            </h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-3">
+              <label className="text-sm font-semibold text-gray-700">Buscar por nome</label>
+              <div className="relative group">
+                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5 group-focus-within:text-indigo-500 transition-colors" />
+                <Input
+                  placeholder="Digite o nome do prestador..."
+                  value={filtroNome}
+                  onChange={(e) => setFiltroNome(e.target.value)}
+                  className="pl-12 h-12 border-2 border-gray-200 focus:border-indigo-500 rounded-xl transition-all duration-300 hover:shadow-md focus:shadow-lg"
+                />
+              </div>
+            </div>
+            <div className="space-y-3">
+              <label className="text-sm font-semibold text-gray-700">Filtrar por categoria</label>
+              <Select value={filtroCategoria} onValueChange={setFiltroCategoria}>
+                <SelectTrigger className="h-12 border-2 border-gray-200 focus:border-indigo-500 rounded-xl transition-all duration-300 hover:shadow-md">
+                  <SelectValue placeholder="Selecione uma categoria" />
+                </SelectTrigger>
+                <SelectContent className="rounded-xl border-2">
+                  <SelectItem value="all" className="rounded-lg">
+                    <div className="flex items-center gap-2">
+                      <span>🌟</span>
+                      <span>Todas as categorias</span>
+                    </div>
+                  </SelectItem>
+                  {categories.map((categoria) => {
+                    const categoryInfo = getCategoriaInfo(categoria.name)
+                    return (
+                      <SelectItem key={categoria.id} value={categoria.name} className="rounded-lg">
+                        <div className="flex items-center gap-2">
+                          <span>{categoryInfo.icon}</span>
+                          <span>{categoria.name}</span>
+                        </div>
+                      </SelectItem>
+                    )
+                  })}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+        </div>
+
+        {/* Lista de Prestadores com animações */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {prestadoresFiltrados.map((prestador, index) => {
+            const categoriaInfo = getCategoriaInfo(prestador.category.name)
+            return (
+              <Card
+                key={prestador.id}
+                className="group overflow-hidden hover:shadow-2xl transition-all duration-500 hover:scale-105 bg-white/90 backdrop-blur-sm border-2 border-white/50 rounded-2xl animate-fade-in hover:animate-pulse-glow"
+                style={{ animationDelay: `${index * 0.1}s` }}
+              >
+                <div className="aspect-square relative overflow-hidden rounded-t-2xl">
+                  <div
+                    className={`absolute inset-0 ${categoriaInfo.cor} opacity-20 group-hover:opacity-30 transition-opacity duration-300`}
+                  />
+                  <Image
+                    src={prestador.photoUrl || "/placeholder.svg?height=200&width=200"}
+                    alt={prestador.title}
+                    fill
+                    className="object-cover group-hover:scale-110 transition-transform duration-500"
+                  />
+                  <div className="absolute top-4 right-4">
+                    <Badge className={`${categoriaInfo.cor} text-white border-0 shadow-lg animate-bounce-in`}>
+                      <span className="mr-1">{categoriaInfo.icon}</span>
+                      {prestador.category.name}
+                    </Badge>
+                  </div>
+                  <div className="absolute bottom-4 left-4 flex items-center gap-1 bg-white/90 backdrop-blur-sm rounded-full px-3 py-1 shadow-lg">
+                    <Star className="w-4 h-4 text-yellow-500 fill-current" />
+                    <span className="text-sm font-semibold">{prestador.averageRating.toFixed(1)}</span>
+                    <span className="text-xs text-gray-600">({prestador.ratingsCount})</span>
+                  </div>
+                </div>
+
+                <CardHeader className="pb-3">
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <CardTitle className="text-xl group-hover:text-indigo-600 transition-colors duration-300">
+                        {prestador.title}
+                      </CardTitle>
+                      <CardDescription className="text-sm font-medium text-gray-600">
+                        {prestador.subtitle}
+                      </CardDescription>
+                    </div>
+                  </div>
+                </CardHeader>
+
+                <CardContent className="space-y-4">
+                  <p className="text-sm text-gray-600 line-clamp-3 leading-relaxed">{prestador.description}</p>
+
+                  {prestador.address && (
+                    <div className="flex items-center gap-2 text-sm text-gray-500">
+                      <MapPin className="w-4 h-4" />
+                      <span className="truncate">{prestador.address}</span>
+                    </div>
+                  )}
+
+                  {/* Contatos com ícones coloridos */}
+                  <div className="space-y-3 pt-2 border-t border-gray-100">
+                    <div className="flex items-center gap-3 text-sm group/contact hover:bg-green-50 p-2 rounded-lg transition-colors">
+                      <div className="w-8 h-8 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center">
+                        <Phone className="w-4 h-4 text-white" />
+                      </div>
+                      <span className="font-medium">{prestador.phone}</span>
+                    </div>
+
+                    <div className="flex items-center gap-3 text-sm group/contact hover:bg-blue-50 p-2 rounded-lg transition-colors">
+                      <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full flex items-center justify-center">
+                        <Mail className="w-4 h-4 text-white" />
+                      </div>
+                      <a href={`mailto:${prestador.email}`} className="text-blue-600 hover:underline font-medium">
+                        {prestador.email}
+                      </a>
+                    </div>
+
+                    {prestador.website && (
+                      <div className="flex items-center gap-3 text-sm group/contact hover:bg-purple-50 p-2 rounded-lg transition-colors">
+                        <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full flex items-center justify-center">
+                          <Globe className="w-4 h-4 text-white" />
+                        </div>
+                        <a
+                          href={prestador.website}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-purple-600 hover:underline font-medium"
+                        >
+                          Visitar site
+                        </a>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Redes Sociais e Avaliação */}
+                  <div className="flex justify-between items-center gap-2 pt-3 border-t border-gray-100">
+                    <div className="flex gap-2">
+                      {prestador.instagram && (
+                        <Button
+                          size="sm"
+                          className="bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white border-0 transition-all duration-300 hover:scale-110 shadow-lg"
+                        >
+                          <Instagram className="w-4 h-4" />
+                        </Button>
+                      )}
+                      {prestador.facebook && (
+                        <Button
+                          size="sm"
+                          className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white border-0 transition-all duration-300 hover:scale-110 shadow-lg"
+                        >
+                          <Facebook className="w-4 h-4" />
+                        </Button>
+                      )}
+                      {prestador.youtube && (
+                        <Button
+                          size="sm"
+                          className="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white border-0 transition-all duration-300 hover:scale-110 shadow-lg"
+                        >
+                          <Youtube className="w-4 h-4" />
+                        </Button>
+                      )}
+                    </div>
+
+                    <RatingModal
+                      prestador={{
+                        id: prestador.id,
+                        titulo: prestador.title,
+                        subtitulo: prestador.subtitle || "",
+                        foto: prestador.photoUrl || "",
+                        categoria: prestador.category.name,
+                      }}
+                      onRatingSubmit={handleRatingSubmit}
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+            )
+          })}
+        </div>
+
+        {prestadoresFiltrados.length === 0 && (
+          <div className="text-center py-16 animate-fade-in">
+            <div className="w-24 h-24 bg-gradient-to-r from-gray-200 to-gray-300 rounded-full flex items-center justify-center mx-auto mb-6">
+              <Search className="w-12 h-12 text-gray-400" />
+            </div>
+            <p className="text-gray-500 text-xl font-medium">Nenhum prestador encontrado</p>
+            <p className="text-gray-400 text-sm mt-2">Tente ajustar os filtros de busca</p>
+          </div>
+        )}
+      </main>
+    </div>
+  )
+}

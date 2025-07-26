@@ -1,0 +1,92 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          Int       @id @default(autoincrement())
+  name        String    @db.VarChar(200)
+  email       String    @unique @db.VarChar(200)
+  passwordHash String   @map("password_hash") @db.VarChar(255)
+  role        String    @default("user") @db.VarChar(50)
+  active      Boolean   @default(true)
+  lastLogin   DateTime? @map("last_login")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  sessions Session[]
+
+  @@map("users")
+}
+
+model Session {
+  id        Int      @id @default(autoincrement())
+  userId    Int      @map("user_id")
+  token     String   @unique @db.VarChar(255)
+  expiresAt DateTime @map("expires_at")
+  ipAddress String?  @map("ip_address") @db.Inet
+  userAgent String?  @map("user_agent")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model Category {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique @db.VarChar(100)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  providers Provider[]
+
+  @@map("categories")
+}
+
+model Provider {
+  id          Int     @id @default(autoincrement())
+  title       String  @db.VarChar(200)
+  subtitle    String? @db.VarChar(200)
+  categoryId  Int     @map("category_id")
+  description String?
+  photoUrl    String? @map("photo_url") @db.VarChar(500)
+  phone       String  @db.VarChar(20)
+  email       String  @db.VarChar(200)
+  address     String?
+  website     String? @db.VarChar(300)
+  instagram   String? @db.VarChar(100)
+  facebook    String? @db.VarChar(100)
+  youtube     String? @db.VarChar(100)
+  linkedin    String? @db.VarChar(100)
+  tiktok      String? @db.VarChar(100)
+  active      Boolean @default(true)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  category Category @relation(fields: [categoryId], references: [id])
+  ratings  Rating[]
+
+  @@map("providers")
+}
+
+model Rating {
+  id           Int      @id @default(autoincrement())
+  providerId   Int      @map("provider_id")
+  reviewerName String   @map("reviewer_name") @db.VarChar(200)
+  rating       Int      @db.SmallInt
+  comment      String?
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  provider Provider @relation(fields: [providerId], references: [id], onDelete: Cascade)
+
+  @@map("ratings")
+}
