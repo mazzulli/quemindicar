@@ -3,12 +3,13 @@ import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import "./globals.css"
 import { Toaster } from "@/components/ui/toaster"
-import { AuthProvider } from "@/contexts/auth-context"
+// import { AuthProvider } from "./AuthProvider"
+//import { AuthProvider } from "@/contexts/auth-context"
 
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Prestadores de Serviços",
+  title: "Quem indicar?",
   description: "Sistema de gerenciamento de prestadores de serviços",
     generator: 'v0.dev'
 }
@@ -21,10 +22,10 @@ export default function RootLayout({
   return (
     <html lang="pt-BR">
       <body className={inter.className}>
-        <AuthProvider>
-          {children}
-          <Toaster />
-        </AuthProvider>
+          {/* <AuthProvider> */}
+            {children}
+            <Toaster />
+          {/* </AuthProvider>         */}
       </body>
     </html>
   )

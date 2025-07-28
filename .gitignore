@@ -3,6 +3,8 @@
 # dependencies
 /node_modules
 
+/repository V0.dev
+
 # next.js
 /.next/
 /out/

@@ -16,6 +16,7 @@ import { createRating } from "@/lib/actions/ratings"
 import { Pagination } from "@/components/pagination"
 import logoQuemIndicar  from "../public/quemIndicarLogov2.png"
 import { ProviderDetailsModal } from "@/components/provider-details-modal"
+import { LoginLink } from "@kinde-oss/kinde-auth-nextjs/components"
 
 interface Category {
   id: number
@@ -175,7 +176,16 @@ export default function HomePage() {
               </div>
             </div>
             <div className="flex gap-3">
-              <Link href="/login">
+              <Link href="/subscriber-plans">
+                <Button
+                  variant="secondary"
+                  className="bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur-sm transition-all duration-300 hover:scale-105"
+                >
+                  <LogIn className="w-4 h-4 mr-2" />
+                  Consulte nossos planos
+                </Button>
+              </Link>
+              {/* <Link href="/login">
                 <Button
                   variant="secondary"
                   className="bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur-sm transition-all duration-300 hover:scale-105"
@@ -183,7 +193,11 @@ export default function HomePage() {
                   <LogIn className="w-4 h-4 mr-2" />
                   Login
                 </Button>
-              </Link>
+              </Link> */}
+              <LoginLink postLoginRedirectURL="/dashboard" className="flex justify-center items-center bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur-sm transition-all duration-300 hover:scale-105 rounded-sm p-2 pr-4 pl-4 ml-4">
+                <LogIn className="w-4 h-4 mr-2" />
+                Login
+              </LoginLink>
             </div>
           </div>
         </div>
@@ -331,7 +345,9 @@ export default function HomePage() {
                       <div className="w-5 h-5 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center flex-shrink-0">
                         <Phone className="w-2.5 h-2.5 text-white" />
                       </div>
-                      <span className="font-medium truncate">{prestador.phone}</span>
+                      <Link href={`whatsapp://send?phone=${prestador.phone}`} className="text-green-600 hover:underline font-medium truncate">
+                        <span className="font-medium truncate">{prestador.phone}</span>
+                      </Link>
                     </div>
 
                     <div className="flex items-center gap-2 text-xs group/contact hover:bg-blue-50 p-1 rounded-lg transition-colors">
