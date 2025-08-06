@@ -1,10 +1,11 @@
 import { ReactNode } from "react";
+import { AuthProvider } from "../AuthProvider";
 
 const SubscribersLayout = ({children}: {children: ReactNode}) => {
     return ( 
-        <>
-        {children}
-        </>
+        <AuthProvider>
+            {children}
+        </AuthProvider>
      );
 }
  

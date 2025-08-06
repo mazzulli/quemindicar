@@ -15,8 +15,7 @@ import { ProtectedRoute } from "@/components/protected-route"
 import { getCategories } from "@/lib/actions/categories"
 import { createProvider } from "@/lib/actions/providers"
 import { ImageUpload } from "@/components/image-upload"
-import {useKindeBrowserClient} from "@kinde-oss/kinde-auth-nextjs";
-import { redirect } from "next/navigation"
+import { useAuth } from "@/contexts/auth-context"
 
 interface Category {
   id: number
@@ -27,21 +26,12 @@ interface Category {
 }
 
 export default function CadastroPage() {
-    const {isAuthenticated, user, permissions, getPermissions } = useKindeBrowserClient();
-    const perms = getPermissions();
-   
-    if (!isAuthenticated || !perms.permissions.includes("basic")) {
-      redirect("/");
-    }  
-
+  const { user } = useAuth()
   const { toast } = useToast()
-  // const { user } = useAuth()
   const [categories, setCategories] = useState<Category[] | undefined>([])
   const [loading, setLoading] = useState(true)
   const [submitting, setSubmitting] = useState(false)
   const [selectedImage, setSelectedImage] = useState<File | null>(null)
-
-  
 
   const [formData, setFormData] = useState({
     title: "",
@@ -190,16 +180,7 @@ export default function CadastroPage() {
         {/* Header */}
         <header className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 shadow-xl">
           <div className="container mx-auto px-4 py-6">
-            <div className="flex items-center gap-4">
-              <Link href="/dashboard">
-                <Button
-                  variant="secondary"
-                  className="bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur-sm transition-all duration-300 hover:scale-105"
-                >
-                  <ArrowLeft className="w-4 h-4 mr-2" />
-                  Voltar
-                </Button>
-              </Link>
+            <div className="flex items-center gap-4  justify-between">              
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
                   <Plus className="w-6 h-6 text-white" />
@@ -209,6 +190,15 @@ export default function CadastroPage() {
                   <p className="text-white/80 text-sm">Adicione um novo profissional à plataforma</p>
                 </div>
               </div>
+              <Link href="/prestadores">
+                <Button
+                  variant="secondary"
+                  className="bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur-sm transition-all duration-300 hover:scale-105"
+                >
+                  <ArrowLeft className="w-4 h-4 mr-2" />
+                  Voltar
+                </Button>
+              </Link>
             </div>
           </div>
         </header>

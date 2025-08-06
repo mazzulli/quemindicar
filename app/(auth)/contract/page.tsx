@@ -10,7 +10,7 @@ const Contract = async () => {
     return ( 
         <div>
             <h1>Que ótimo que vc decidiu contratar nossos serviços</h1>            
-            <LogoutLink>
+            <LogoutLink postLogoutRedirectURL="/">
                 <button className="bg-red-500 text-white px-4 py-2 rounded">
                     Sair
                 </button>
