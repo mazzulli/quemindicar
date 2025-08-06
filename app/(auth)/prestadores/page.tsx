@@ -300,16 +300,7 @@ export default function PrestadoresPage() {
         <header className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 shadow-xl">
           <div className="container mx-auto px-4 py-6">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <Link href="/dashboard">
-                  <Button
-                    variant="secondary"
-                    className="bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur-sm transition-all duration-300 hover:scale-105"
-                  >
-                    <ArrowLeft className="w-4 h-4 mr-2" />
-                    Voltar
-                  </Button>
-                </Link>
+              <div className="flex items-center gap-4 justify-around">                
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
                     <Users className="w-6 h-6 text-white" />
@@ -320,17 +311,28 @@ export default function PrestadoresPage() {
                       {filteredAndSortedProviders?.length} de {providers?.length} prestadores
                     </p>
                   </div>
-                </div>
+                </div>                
               </div>
-              <Link href="/cadastro">
-                <Button
-                  variant="secondary"
-                  className="bg-green-500/20 hover:bg-green-500/30 text-white border-green-300/30 backdrop-blur-sm transition-all duration-300 hover:scale-105"
-                >
-                  <Plus className="w-4 h-4 mr-2" />
-                  Novo Prestador
-                </Button>
-              </Link>
+              <div className="flex items-center justify-end gap-4">
+                <Link href="/cadastro">
+                  <Button
+                    variant="secondary"
+                    className="bg-green-500/20 hover:bg-green-500/30 text-white border-green-300/30 backdrop-blur-sm transition-all duration-300 hover:scale-105"
+                  >
+                    <Plus className="w-4 h-4 mr-2" />
+                    Novo Prestador
+                  </Button>
+                </Link>
+                <Link href="/dashboard">
+                  <Button
+                    variant="secondary"
+                    className="bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur-sm transition-all duration-300 hover:scale-105"
+                  >
+                    <ArrowLeft className="w-4 h-4 mr-2" />
+                    Voltar
+                  </Button>
+                </Link>
+              </div>
             </div>
           </div>
         </header>

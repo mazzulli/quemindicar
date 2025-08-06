@@ -218,16 +218,7 @@ export default function DashboardPage() {
                       <Filter className="w-4 h-4 mr-2" />
                       Categorias
                     </Button>
-                  </Link>
-                  <Link href="/cadastro">
-                    <Button
-                      variant="secondary"
-                      className="bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur-sm transition-all duration-300 hover:scale-105"
-                    >
-                      <Plus className="w-4 h-4 mr-2" />
-                      Cadastrar Prestador
-                    </Button>
-                  </Link>
+                  </Link>                  
                   <Button
                     onClick={logout}
                     variant="secondary"
