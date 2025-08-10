@@ -6,7 +6,7 @@
     "build": "prisma generate && next build",
     "dev": "next dev",
     "lint": "next lint",
-    "start": "next start --host 0.0.0.0",
+    "start": "next start --hostname 0.0.0.0",
     "postinstall": "prisma generate",
     "vercel-build": "prisma generate && prisma migrate deploy && next build"
   },
