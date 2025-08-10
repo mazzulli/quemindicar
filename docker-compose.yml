@@ -22,6 +22,12 @@ services:
     command: sh -c "npx prisma generate && npx prisma migrate deploy && npm start"
     volumes:
       - application-data:/app
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.quemindicar.rule=Host(`quemindicar.com.br`)
+      - traefik.http.routers.quemindicar.tls=true
+      - traefik.http.routers.quemindicar.tls.certResolver=lets-encrypt
+      - traefik.http.services.quemindicar.loadBalancer.server.port=3000
 
   database:
     image: postgres:17-alpine
