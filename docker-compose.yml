@@ -1,17 +1,29 @@
-version: "3.8"
-
 services:
-  app:
-    # Use 'build' if you have a Dockerfile in the same directory.
-    # Otherwise, you can use 'image' if you have a pre-built image.
-    build: .
-    container_name: quemindicar-app
+  caddy:
+    image: caddy:2-alpine
     restart: always
-    ports:
-      - "3000:3000"
+    networks:
+      - traefik-network
+    volumes:
+      - application-data:/app:ro
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.quemindicar.rule=Host(`quemindicar.com.br`)
+      - traefik.http.routers.quemindicar.tls=true
+      - traefik.http.routers.quemindicar.tls.certResolver=lets-encrypt
+      - traefik.http.services.quemindicar.loadBalancer.server.port=80
+
+  app:
+    build:
+      dockerfile: Dockerfile
+      context: .
+    restart: always
+    networks:
+      - local-network
+      - traefik-network
     environment:
-      # Use the environment variables from your .env file
-      - DATABASE_URL=postgresql://ssit_owner:ssit_2089_Inf0@db:5432/quemindicar_db
+      - DATABASE_URL=postgresql://ssit_owner:ssit_2089_Inf0@database:5432/quemindicar_db
       - NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
       - NEXTAUTH_URL=${NEXTAUTH_URL}
       - STRIPE_MONTHLY_PRICE_ID=${STRIPE_MONTHLY_PRICE_ID}
@@ -22,24 +34,28 @@ services:
       - STRIPE_WEBHOOK_SECRET=${STRIPE_WEBHOOK_SECRET}
       - NEXT_PUBLIC_STRIPE_CUSTOMER_PORTAL_URL=${NEXT_PUBLIC_STRIPE_CUSTOMER_PORTAL_URL}
     depends_on:
-      - db
-    # In a production environment, you might want to use a volume for persistent storage
+      - database
+    command: sh -c "npx prisma generate && npx prisma migrate deploy && npm start -- --hostname 0.0.0.0"
     volumes:
-      - ./quemindicar:/app
+      - application-data:/app/public
 
-  # Database service
-  db:
-    image: postgres:17
-    container_name: quemindicar-db
+  database:
+    image: postgres:17-alpine
     restart: always
+    networks:
+      - local-network
     environment:
       POSTGRES_USER: ssit_owner
       POSTGRES_PASSWORD: ssit_2089_Inf0
       POSTGRES_DB: quemindicar_db
     volumes:
       - postgres-data:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
 
 volumes:
   postgres-data:
+  application-data:
+
+networks:
+  local-network:
+  traefik-network:
+    external: true
