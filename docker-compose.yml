@@ -22,7 +22,7 @@ services:
       - database
     command: sh -c "npx prisma generate && npx prisma migrate deploy && npm start"
     volumes:
-      - application-data:/app
+      - application-data:/app/public
     labels:
       - traefik.enable=true
       - traefik.http.routers.quemindicar.rule=Host(`quemindicar.com.br`)
