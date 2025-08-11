@@ -16,7 +16,6 @@ import { createRating } from "@/lib/actions/ratings"
 import { Pagination } from "@/components/pagination"
 import logoQuemIndicar  from "../public/quemIndicarLogov2.png"
 import { ProviderDetailsModal } from "@/components/provider-details-modal"
-import { LoginLink } from "@kinde-oss/kinde-auth-nextjs/components"
 
 interface Category {
   id: number
@@ -194,10 +193,6 @@ export default function HomePage() {
                   Login
                 </Button>
               </Link>
-              {/* <LoginLink postLoginRedirectURL="/dashboard" className="flex justify-center items-center bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur-sm transition-all duration-300 hover:scale-105 rounded-sm p-2 pr-4 pl-4 ml-4">
-                <LogIn className="w-4 h-4 mr-2" />
-                Login
-              </LoginLink> */}
             </div>
           </div>
         </div>
