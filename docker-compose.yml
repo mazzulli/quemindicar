@@ -9,7 +9,7 @@ services:
       - ./Caddyfile:/etc/caddy/Caddyfile:ro
     labels:
       - traefik.enable=true
-      - traefik.http.routers.quemindicar.rule=Host(`quemindicar.com.br`)
+      - traefik.http.routers.quemindicar.rule=Host(`quemindicar.com.br`) || Host(`www.quemindicar.com.br`)
       - traefik.http.routers.quemindicar.tls=true
       - traefik.http.routers.quemindicar.tls.certResolver=lets-encrypt
       - traefik.http.services.quemindicar.loadBalancer.server.port=80
