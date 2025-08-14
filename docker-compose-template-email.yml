@@ -1,0 +1,37 @@
+version: "3.8"
+
+services:
+  traefik:
+    image: traefik:v2.10
+    container_name: traefik
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"
+    volumes:
+      - ./traefik.yml:/traefik.yml
+      - /var/run/docker.sock:/var/run/docker.sock
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.traefik.rule=Host(`traefik.yourdomain.com`)"
+      - "traefik.http.routers.traefik.entrypoints=websecure"
+      - "traefik.http.routers.traefik.tls.certresolver=myresolver"
+      - "traefik.http.services.traefik.loadbalancer.server.port=8080"
+
+  # Exemplo de serviço de email (pode ser outro)
+  mailserver:
+    image: mail-server:latest
+    container_name: mailserver
+    restart: always
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.mailserver.rule=Host(`mail.yourdomain.com`)"
+      - "traefik.http.routers.mailserver.entrypoints=websecure"
+      - "traefik.http.routers.mailserver.tls.certresolver=myresolver"
+      - "traefik.http.services.mailserver.loadbalancer.server.port=80"  # Porta do serviço de email
+    ports:
+      - "25:25"
+      - "143:143"
+      - "465:465"
+      - "993:993"
