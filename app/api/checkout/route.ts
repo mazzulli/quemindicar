@@ -27,6 +27,8 @@ export async function POST(request: Request) {
     return NextResponse.json({
       id: session.id,
       client_secret: session.client_secret,
+      email: session.customer_email,
+      name: session.customer,
     });
   } catch (error) {
     console.error("Error creating Stripe session:", error);

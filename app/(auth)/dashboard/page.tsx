@@ -6,7 +6,6 @@ import {
   TrendingUp,
   Star,
   Eye,
-  Plus,
   Filter,
   BarChart3,
   Award,
@@ -96,7 +95,7 @@ export default function DashboardPage() {
         getMonthlyGrowth(),
       ])
 
-      if (statsResult.success) {
+      if (statsResult.success && statsResult.data) {
         setDashboardStats(statsResult.data)
       } else {
         toast({
@@ -106,15 +105,15 @@ export default function DashboardPage() {
         })
       }
 
-      if (categoriesResult.success) {
+      if (categoriesResult.success && categoriesResult.data) {
         setCategoriesStats(categoriesResult.data)
       }
 
-      if (providersResult.success) {
+      if (providersResult.success && providersResult.data) {
         setTopProviders(providersResult.data)
       }
 
-      if (growthResult.success) {
+      if (growthResult.success && growthResult.data) {
         setMonthlyGrowth(growthResult.data)
       }
     } catch (error) {

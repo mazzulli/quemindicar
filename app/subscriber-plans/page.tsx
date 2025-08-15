@@ -2,7 +2,7 @@ import Header from "./components/header";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { BookMarkedIcon, CheckIcon, FileCode2Icon, TicketXIcon } from "lucide-react";
-import CheckoutButton from "../_components/checkout-button";
+import CheckoutButton from "./components/checkout-button";
 import Link from "next/link";
 
 export default function Subscriptions( ){
