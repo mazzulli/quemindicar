@@ -11,15 +11,15 @@ datasource db {
 }
 
 model User {
-  id          Int       @id @default(autoincrement())
-  name        String    @db.VarChar(200)
-  email       String    @unique @db.VarChar(200)
-  passwordHash String   @map("password_hash") @db.VarChar(255)
-  role        String    @default("user") @db.VarChar(50)
-  active      Boolean   @default(true)
-  lastLogin   DateTime? @map("last_login")
-  createdAt   DateTime  @default(now()) @map("created_at")
-  updatedAt   DateTime  @updatedAt @map("updated_at")
+  id           String    @id @default(uuid())
+  name         String    @db.VarChar(200)
+  email        String    @unique @db.VarChar(200)
+  passwordHash String    @db.VarChar(255)
+  role         String    @default("Customer") @db.VarChar(50)
+  active       Boolean   @default(true)
+  lastLogin    DateTime?
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
 
   sessions Session[]
 
@@ -28,7 +28,7 @@ model User {
 
 model Session {
   id        Int      @id @default(autoincrement())
-  userId    Int      @map("user_id")
+  userId    String
   token     String   @unique @db.VarChar(255)
   expiresAt DateTime @map("expires_at")
   ipAddress String?  @map("ip_address") @db.Inet
@@ -52,22 +52,22 @@ model Category {
 }
 
 model Provider {
-  id          Int     @id @default(autoincrement())
-  title       String  @db.VarChar(200)
-  subtitle    String? @db.VarChar(200)
-  categoryId  Int     @map("category_id")
+  id          Int      @id @default(autoincrement())
+  title       String   @db.VarChar(200)
+  subtitle    String?  @db.VarChar(200)
+  categoryId  Int      @map("category_id")
   description String?
-  photoUrl    String? @map("photo_url") @db.VarChar(500)
-  phone       String  @db.VarChar(20)
-  email       String  @db.VarChar(200)
+  photoUrl    String?  @map("photo_url") @db.VarChar(500)
+  phone       String   @db.VarChar(20)
+  email       String   @db.VarChar(200)
   address     String?
-  website     String? @db.VarChar(300)
-  instagram   String? @db.VarChar(100)
-  facebook    String? @db.VarChar(100)
-  youtube     String? @db.VarChar(100)
-  linkedin    String? @db.VarChar(100)
-  tiktok      String? @db.VarChar(100)
-  active      Boolean @default(true)
+  website     String?  @db.VarChar(300)
+  instagram   String?  @db.VarChar(100)
+  facebook    String?  @db.VarChar(100)
+  youtube     String?  @db.VarChar(100)
+  linkedin    String?  @db.VarChar(100)
+  tiktok      String?  @db.VarChar(100)
+  active      Boolean  @default(true)
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
 

@@ -1,10 +1,11 @@
 "use client"
 
-import { createContext, useContext, useState, useEffect, type ReactNode } from "react"
+import { createContext, useContext, useEffect, useState, type ReactNode } from "react"
 import { useRouter } from "next/navigation"
+import { validateLogin } from "@/lib/actions/users"
 
 interface User {
-  id: number
+  id: string
   name: string
   email: string
   role: string
@@ -19,29 +20,11 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
-// Usuários simulados - em produção viria do banco de dados
-const MOCK_USERS = [
-  {
-    id: 1,
-    name: "Administrador",
-    email: "admin@prestadores.com",
-    password: "admin123",
-    role: "admin",
-  },
-  {
-    id: 2,
-    name: "Gestor",
-    email: "gestor@prestadores.com",
-    password: "gestor123",
-    role: "manager",
-  },
-]
-
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState(true)
-  const router = useRouter()
-
+  const router = useRouter()  
+  
   useEffect(() => {
     // Verificar se há um usuário logado no localStorage
     const savedUser = localStorage.getItem("user")
@@ -55,21 +38,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setIsLoading(true)
 
     // Simular delay de autenticação
-    await new Promise((resolve) => setTimeout(resolve, 1000))
+//    await new Promise((resolve) => setTimeout(resolve, 1000))
 
     // Verificar credenciais
-    const foundUser = MOCK_USERS.find((u) => u.email === email && u.password === password)
+    const userResult = await validateLogin(email, password)
 
-    if (foundUser) {
-      const userData = {
-        id: foundUser.id,
-        name: foundUser.name,
-        email: foundUser.email,
-        role: foundUser.role,
+    if (userResult.user.id && userResult.result){
+      const userData = {        
+        id: userResult.user.id,
+        name: userResult.user.name,
+        email: userResult.user.email,
+        role: userResult.user.role,
       }
       setUser(userData)
       localStorage.setItem("user", JSON.stringify(userData))
-      setIsLoading(false)
+      setIsLoading(false)      
       return true
     }
 

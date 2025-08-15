@@ -6,6 +6,6 @@ export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "", {
   appInfo: {
     name: "Quem Indicar?",
     version: version,
-    url: "https://quemindicar.com.br",
+    url: "https://www.quemindicar.com.br",
   },
 });
