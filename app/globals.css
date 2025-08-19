@@ -4,6 +4,8 @@
 
 @layer base {
   :root {
+    --accent: oklch(0.55 0.15 160); /* #10b981 emerald-500 */
+    --accent-foreground: oklch(1 0 0); /* #ffffff */
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
     --card: 0 0% 100%;
@@ -27,6 +29,8 @@
   }
 
   .dark {
+    --accent: oklch(0.55 0.15 160); /* #10b981 emerald-500 */
+    --accent-foreground: oklch(1 0 0); /* #ffffff */
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
     --card: 222.2 84% 4.9%;
@@ -95,7 +99,9 @@
   }
 
   .hover-lift {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition:
+      transform 0.3s ease,
+      box-shadow 0.3s ease;
   }
 
   .hover-lift:hover {

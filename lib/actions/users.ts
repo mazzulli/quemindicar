@@ -14,7 +14,6 @@ export type UserProps = {
 };
 
 export async function createUser(data: UserProps) {
-  console.log("ENTREI NA GRAVAÇAÕ");
   try {
     const validatedData = userSchema.parse(data);
     const { ...userData } = validatedData;
@@ -22,8 +21,6 @@ export async function createUser(data: UserProps) {
     const existingUser = await prisma.user.findUnique({
       where: { email: userData.email },
     });
-
-    console.log("EMAIL VALIDADO");
 
     if (existingUser) {
       return {

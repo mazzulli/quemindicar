@@ -172,6 +172,18 @@ export async function createProvider(formData: FormData) {
       };
     }
 
+    // valida email
+    const emailExists = await prisma.provider.findFirst({
+      where: { email: validatedData.email },
+    });
+
+    if (emailExists) {
+      return {
+        success: false,
+        error: "Já existe um prestador com este e-mail",
+      };
+    }
+
     // Handle image upload if file is present
     let photoUrl: string | null = null;
     const photoFile = formData.get("photo") as File;
@@ -220,15 +232,12 @@ export async function createProvider(formData: FormData) {
       message: "Prestador criado com sucesso",
     };
   } catch (error) {
-    console.error("Error creating provider:", error);
-
     if (error instanceof Error) {
       return {
         success: false,
         error: error.message,
       };
     }
-
     return {
       success: false,
       error: "Erro ao criar prestador",
