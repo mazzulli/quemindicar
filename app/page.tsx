@@ -128,7 +128,7 @@ export default function HomePage() {
       Events: { cor: "bg-gradient-to-r from-red-500 to-pink-500", icon: "🎉" },
     }
 
-    return categoryMap[categoryName] || { cor: "bg-gradient-to-r from-gray-500 to-gray-600", icon: "📋" }
+    return categoryMap[categoryName] || { cor: "bg-gradient-to-r from-gray-500 to-gray-600", icon: "✨" }
   }
 
   const handleRatingSubmit = async (prestadorId: number, rating: number, comment: string, reviewerName: string) => {

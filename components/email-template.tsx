@@ -69,7 +69,7 @@ export const WelcomeEmail = ({
         <Text style={paragraph}>
           Att,
           <br />
-          Time Quem Indicar
+          Equipe Quem Indicar
         </Text>
         <Hr style={hr} />
         <Text style={footer}>
