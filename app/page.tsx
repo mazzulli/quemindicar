@@ -340,8 +340,9 @@ export default function HomePage() {
                       <div className="w-5 h-5 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center flex-shrink-0">
                         <Phone className="w-2.5 h-2.5 text-white" />
                       </div>
-                      <Link href={`whatsapp://send?phone=${prestador.phone}`} className="text-green-600 hover:underline font-medium truncate">
-                        <span className="font-medium truncate">{prestador.phone}</span>
+                                            
+                      <Link href={`https://wa.me/55${prestador.phone.trim().replaceAll(" ","").replaceAll("-","")}?text=Olá gostaria de mais informações sobre seus serviços...`} target="_blank" className="text-green-600 hover:underline font-medium truncate">
+                        <span className="font-medium truncate">{prestador.phone}</span>                        
                       </Link>
                     </div>
 

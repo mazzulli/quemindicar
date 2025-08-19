@@ -1,5 +1,20 @@
 import { z } from "zod";
 
+// User validations
+export const userSchema = z.object({
+  name: z
+    .string()
+    .min(2, "Nome é obrigatório")
+    .max(80, "Nome deve ter no máximo 80 caracteres")
+    .trim(),
+  email: z.string().email(),
+  passwordHash: z.string(),
+  role: z.enum(["Admin", "Customer"], {
+    errorMap: () => ({ message: "Role deve ser 'Admin' ou 'Customer'" }),
+  }),
+  active: z.boolean(),
+});
+
 // Category validations
 export const categorySchema = z.object({
   name: z

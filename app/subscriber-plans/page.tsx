@@ -1,9 +1,10 @@
 import Header from "./components/header";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { BookMarkedIcon, CheckIcon, FileCode2Icon, TicketXIcon } from "lucide-react";
-import CheckoutButton from "../_components/checkout-button";
+import { BookMarkedIcon, CheckIcon, FileCode2Icon, GroupIcon, Target, TicketXIcon, TrendingUp, Users, UsersRoundIcon } from "lucide-react";
+import CheckoutButton from "./components/checkout-button";
 import Link from "next/link";
+import { Badge } from "@/components/ui/badge";
 
 export default function Subscriptions( ){
   const monthlyPrice = process.env.STRIPE_MONTHLY_PRICE_ID!
@@ -18,10 +19,51 @@ export default function Subscriptions( ){
         description="Escolha o plano ideal para manter sua publicidade ativa."
         path="/"
       />
-
+      <section className="py-16 bg-secondary">
+        <div className="container mx-auto px-4 text-center">
+          <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-6">
+            Acelere o Crescimento do Seu Negócio
+          </h1>
+          <p className="text-xl text-muted-foreground mb-12 max-w-3xl mx-auto">
+            Junte-se a diversos profissionais que já aumentaram suas vendas em até 300% com nossa plataforma de divulgação
+          </p>          
+          {/* Growth Metrics */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+            <Card className="border-accent/20 bg-card/50">
+              <CardContent className="p-6 text-center">
+                <div className="flex items-center justify-center mb-4">
+                  <TrendingUp className="w-12 h-12 text-pink-700" />
+                </div>
+                <div className="text-3xl font-bold text-purple-700 mb-2">+300%</div>
+                <div className="text-sm text-muted-foreground">Aumento médio em vendas</div>
+              </CardContent>
+            </Card>
+            
+            <Card className="border-accent/20 bg-card/50">
+              <CardContent className="p-6 text-center">
+                <div className="flex items-center justify-center mb-4">
+                  <Users className="w-12 h-12 text-pink-700" />
+                </div>
+                <div className="text-3xl font-bold text-purple-700 mb-2">2M+</div>
+                <div className="text-sm text-muted-foreground">Clientes alcançados mensalmente</div>
+              </CardContent>
+            </Card>
+            
+            <Card className="border-accent/20 bg-card/50">
+              <CardContent className="p-6 text-center">
+                <div className="flex items-center justify-center mb-4">
+                  <Target className="w-12 h-12 text-pink-700" />
+                </div>
+                <div className="text-3xl font-bold text-purple-700 mb-2">85%</div>
+                <div className="text-sm text-muted-foreground">Taxa de conversão média</div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
       {/* Centralizar os cards */}
-      <div className="flex justify-center mt-8 flex-col">
-        <div className="flex gap-6  flex-col sm:flex-row items-center justify-center mt-12">
+      <div className="flex justify-center mt-8 flex-col">      
+        <div className="flex gap-6 flex-col sm:flex-row items-center justify-center mt-12">
           {/* PLANO MENSAL */}
           <Card className="w-[450px]">
             <CardHeader className="border-b border-solid py-8">
@@ -60,8 +102,9 @@ export default function Subscriptions( ){
           </Card>
 
           {/* PLANO SEMESTRAL */}
-          <Card className="w-[450px]">
+          <Card className="w-[450px] border-primary border-2 sm:mt-[-60px] mt-4">
             <CardHeader className="relative border-b border-solid py-8">              
+              <Badge className="absolute -top-5 left-1/2 transform -translate-x-1/2 bg-primary text-xl">Mais Popular</Badge>
               <h2 className="text-center text-2xl font-semibold">
                 Plano Semestral
               </h2>

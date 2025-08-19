@@ -52,7 +52,10 @@ services:
       - traefik.http.routers.prisma-studio.tls.certResolver=lets-encrypt
       - traefik.http.routers.prisma-studio.middlewares=basic-auth@file
       - traefik.http.services.prisma-studio.loadBalancer.server.port=5555
+<<<<<<< HEAD
 
+=======
+>>>>>>> 8458eeacc3e166edd225a47dfaa81c224538e2b8
   database:
     image: postgres:17-alpine
     restart: always

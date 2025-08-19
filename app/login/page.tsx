@@ -36,7 +36,7 @@ export default function LoginPage() {
 
     try {
       const success = await login(email, password)
-
+      
       if (success) {
         toast({
           title: "Login realizado com sucesso!",
