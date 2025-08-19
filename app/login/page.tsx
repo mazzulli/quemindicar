@@ -36,8 +36,6 @@ export default function LoginPage() {
 
     try {
       const success = await login(email, password)
-
-      console.log('SUCESSO DE POIS DO LOGIN: ', success)
       
       if (success) {
         toast({

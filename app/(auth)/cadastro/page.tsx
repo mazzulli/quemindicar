@@ -39,7 +39,7 @@ export default function CadastroPage() {
     categoryId: "",
     description: "",
     phone: "",
-    email: "",
+    email: user?.email || "sememail@email.com.br",
     address: "",
     website: "",
     instagram: "",
@@ -60,14 +60,14 @@ export default function CadastroPage() {
         setCategories(result.data)
       } else {
         toast({
-          title: "Erro",
+          title: "Ops",
           description: result.error,
           variant: "destructive",
         })
       }
     } catch (error) {
       toast({
-        title: "Erro",
+        title: "Ops",
         description: "Erro ao carregar categorias",
         variant: "destructive",
       })
@@ -118,6 +118,9 @@ export default function CadastroPage() {
         submitFormData.append("photo", selectedImage)
       }
 
+      submitFormData.append("email", user?.email || "sememail@email.com.br")
+      console.log("Submitting form data:", Object.fromEntries(submitFormData.entries()))
+
       const result = await createProvider(submitFormData)
 
       if (result.success) {
@@ -133,7 +136,7 @@ export default function CadastroPage() {
           categoryId: "",
           description: "",
           phone: "",
-          email: "",
+          email: user?.email || "",
           address: "",
           website: "",
           instagram: "",
@@ -145,15 +148,15 @@ export default function CadastroPage() {
         setSelectedImage(null)
       } else {
         toast({
-          title: "Erro",
+          title: "Ops",
           description: result.error,
           variant: "destructive",
         })
       }
-    } catch (error) {
+    } catch (error: {success?: boolean, toString: () => string, error: string | null} | any) {
       toast({
-        title: "Erro",
-        description: "Erro ao criar prestador",
+        title: "Ops. Encontramos um problema ao criar o prestador",
+        description: {error}?.toString() || "Tente novamente mais tarde, ou entre em contato com nosso atendimento.",        
         variant: "destructive",
       })
     } finally {
@@ -189,8 +192,8 @@ export default function CadastroPage() {
                   <h1 className="text-3xl font-bold text-white">Cadastro de Prestador</h1>
                   <p className="text-white/80 text-sm">Adicione um novo profissional à plataforma</p>
                 </div>
-              </div>
-              <Link href="/prestadores">
+              </div>              
+              <Link href={`${user?.role === "Customer" ? "/dashboard" : "/prestadores" }`}>
                 <Button
                   variant="secondary"
                   className="bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur-sm transition-all duration-300 hover:scale-105"
@@ -293,13 +296,9 @@ export default function CadastroPage() {
                   <div className="space-y-2">
                     <Label htmlFor="email">E-mail *</Label>
                     <Input
-                      id="email"
-                      type="email"
-                      value={formData.email}
-                      onChange={(e) => handleInputChange("email", e.target.value)}
-                      placeholder="exemplo@email.com"
-                      required
-                      disabled={submitting}
+                      id="email"                      
+                      value={user?.email || formData.email}                                                                  
+                      disabled
                     />
                   </div>
                 </div>

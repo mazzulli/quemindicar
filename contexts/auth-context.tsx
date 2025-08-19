@@ -37,9 +37,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login = async (email: string, password: string): Promise<boolean> => {
     setIsLoading(true)
 
-    // Simular delay de autenticação
-//    await new Promise((resolve) => setTimeout(resolve, 1000))
-
     // Verificar credenciais
     const userResult = await validateLogin(email, password)
 
@@ -61,9 +58,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   const logout = () => {
-    setUser(null)
+    //setUser(null)
     localStorage.removeItem("user")
-    router.push("/")
+    router.push("/login")
   }
 
   return <AuthContext.Provider value={{ user, login, logout, isLoading }}>{children}</AuthContext.Provider>

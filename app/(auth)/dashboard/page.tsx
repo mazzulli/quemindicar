@@ -86,8 +86,11 @@ export default function DashboardPage() {
     loadDashboardData()
   }, [])
 
-  const loadDashboardData = async () => {
+  const loadDashboardData = async () => {    
     try {
+      if(user?.role === "Customer"){
+        
+      }
       const [statsResult, categoriesResult, providersResult, growthResult] = await Promise.all([
         getDashboardStats(),
         getCategoriesStats(),
@@ -191,33 +194,52 @@ export default function DashboardPage() {
                   <p className="text-white/70 text-xs">{user?.email}</p>
                 </div>
                 <div className="flex gap-3">
-                  <Button
-                    onClick={handleRefresh}
-                    disabled={refreshing}
-                    variant="secondary"
-                    className="bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur-sm transition-all duration-300 hover:scale-105"
-                  >
-                    <RefreshCw className={`w-4 h-4 mr-2 ${refreshing ? "animate-spin" : ""}`} />
-                    Atualizar
-                  </Button>
-                  <Link href="/prestadores">
-                    <Button
-                      variant="secondary"
-                      className="bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur-sm transition-all duration-300 hover:scale-105"
-                    >
-                      <Users className="w-4 h-4 mr-2" />
-                      Gerenciar Prestadores
-                    </Button>
-                  </Link>
-                  <Link href="/categorias">
-                    <Button
-                      variant="secondary"
-                      className="bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur-sm transition-all duration-300 hover:scale-105"
-                    >
-                      <Filter className="w-4 h-4 mr-2" />
-                      Categorias
-                    </Button>
-                  </Link>                  
+                  {user?.role === "Administrator" && (                    
+                    <>
+                      <Button
+                        onClick={handleRefresh}
+                        disabled={refreshing}
+                        variant="secondary"
+                        className="bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur-sm transition-all duration-300 hover:scale-105"
+                      >
+                        <RefreshCw className={`w-4 h-4 mr-2 ${refreshing ? "animate-spin" : ""}`} />
+                        Atualizar
+                      </Button>
+                  
+                      <Link href="/prestadores">
+                        <Button
+                          variant="secondary"
+                          className="bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur-sm transition-all duration-300 hover:scale-105"
+                        >
+                          <Users className="w-4 h-4 mr-2" />
+                          Gerenciar Prestadores
+                        </Button>
+                      </Link>
+                    
+                      <Link href="/categorias">
+                        <Button
+                          variant="secondary"
+                          className="bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur-sm transition-all duration-300 hover:scale-105"
+                        >
+                          <Filter className="w-4 h-4 mr-2" />
+                          Categorias
+                        </Button>
+                      </Link>     
+                    </>             
+                  )}
+
+                  {user?.role === "Customer" && (                    
+                    <Link href={`/cadastro`}>
+                      <Button
+                        variant="secondary"
+                        className="bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur-sm transition-all duration-300 hover:scale-105"
+                      >
+                        <Users className="w-4 h-4 mr-2" />
+                        Seu cadastro
+                      </Button>
+                    </Link>
+                  )}
+
                   <Button
                     onClick={logout}
                     variant="secondary"
