@@ -30,6 +30,29 @@ services:
     volumes:
       - application-data:/app/public
 
+  studio:
+    build:
+      dockerfile: Dockerfile
+      context: .
+    restart: always
+    networks:
+      - local-network
+      - traefik-network
+    env_file:
+      - .env
+    depends_on:
+      - app
+    command: sh -c "npx prisma studio --hostname 0.0.0.0"
+    volumes:
+      - application-data:/app
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.prisma-studio.rule=Host(`studio.quemindicar.com.br`)
+      - traefik.http.routers.prisma-studio.tls=true
+      - traefik.http.routers.prisma-studio.tls.certResolver=lets-encrypt
+      - traefik.http.routers.prisma-studio.middlewares=basic-auth@file
+      - traefik.http.services.prisma-studio.loadBalancer.server.port=5555
+
   database:
     image: postgres:17-alpine
     restart: always
