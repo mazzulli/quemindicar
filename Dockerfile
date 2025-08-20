@@ -4,7 +4,8 @@ RUN apt-get update && apt-get upgrade -y && apt-get clean && rm -rf /var/lib/apt
 
 WORKDIR /app
 
-COPY package*.json prisma ./
+COPY package*.json .
+COPY prisma prisma
 
 RUN yarn install
 

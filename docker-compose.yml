@@ -43,15 +43,13 @@ services:
     depends_on:
       - app
     command: sh -c "npx prisma studio --hostname 0.0.0.0"
-    volumes:
-      - application-data:/app
     labels:
       - traefik.enable=true
-      - traefik.http.routers.prisma-studio.rule=Host(`studio.quemindicar.com.br`)
-      - traefik.http.routers.prisma-studio.tls=true
-      - traefik.http.routers.prisma-studio.tls.certResolver=lets-encrypt
-      - traefik.http.routers.prisma-studio.middlewares=basic-auth@file
-      - traefik.http.services.prisma-studio.loadBalancer.server.port=5555
+      - traefik.http.routers.quemindicar-prisma-studio.rule=Host(`studio.quemindicar.com.br`)
+      - traefik.http.routers.quemindicar-prisma-studio.tls=true
+      - traefik.http.routers.quemindicar-prisma-studio.tls.certResolver=lets-encrypt
+      - traefik.http.routers.quemindicar-prisma-studio.middlewares=basic-auth@file
+      - traefik.http.services.quemindicar-prisma-studio.loadBalancer.server.port=5555
 
   database:
     image: postgres:17-alpine
