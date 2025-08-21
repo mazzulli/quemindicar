@@ -1,7 +1,7 @@
 import Header from "./components/header";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { BookMarkedIcon, CheckIcon, FileCode2Icon, GroupIcon, Target, TicketXIcon, TrendingUp, Users, UsersRoundIcon } from "lucide-react";
+import { BookMarkedIcon, CheckIcon, FileCode2Icon, GlobeIcon, GroupIcon, Mail, PhoneCall, PhoneIcon, Target, TicketXIcon, TrendingUp, Users, UsersRoundIcon } from "lucide-react";
 import CheckoutButton from "./components/checkout-button";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
@@ -178,6 +178,43 @@ export default function Subscriptions( ){
             </CardFooter>
           </Card>
         </div>
+        
+        {/* BANNER SITE */}
+        <div className="container mx-auto px-4 text-center mt-24 mb-12">
+          <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-6">
+            Quer impulsionar ainda mais e aproveitar para tirar seu negócio do anonimato?
+          </h1>
+          <p className="text-xl text-muted-foreground">
+            Solicite agora mesmo a construção do seu site
+          </p>  
+        </div>
+
+        {/* VIDEO */}
+        <div className="container text-center flex flex-col justify-center items-center px-4">
+          <video 
+            preload="metadata" 
+            poster="/site499.png" 
+            className="flex justify-center items-center rounded-xl mb-12" autoPlay loop>          
+            <source src="/site499.mp4" type="video/mp4" />
+              Seu navegador não suporta a tag de vídeo.
+          </video>
+          <div className="flex sm:flex-row flex-col items-center justify-center gap-12 text-sm">
+            <Link href="https://www.ssitconsulting.com.br" target="_blank" className="flex flex-col items-center">
+              <GlobeIcon className="w-8 h-8 text-pink-700 mx-auto" />
+              <p>www.ssitconsulting.com.br</p>
+            </Link>            
+            <div className="flex flex-col items-center">
+              <Mail className="w-8 h-8 text-pink-700 mx-auto" />
+              <p>contato@ssitconsulting.com.br</p>
+            </div>            
+            <Link href="https://wa.me/+5511992281207?text=Olá, gostaria de mais informações sobre a criação de site por R$ 499,00..." target="_blank" className="flex flex-col items-center">
+              <PhoneCall className="w-8 h-8 text-pink-700 mx-auto" />
+              <p>+55 11 99228-1207</p>
+            </Link>            
+          </div>
+        </div>
+
+        {/* FOOTER */}
         <Separator className="mt-12 mb-10" />
         <div className="flex sm:justify-end justify-between sm:p-6 p-4 text-xs sm:text-sm gap-8">
           <Link href='/terms-of-use' className="flex items-center gap-2 text-center flex-col sm:flex-row">
