@@ -193,9 +193,9 @@ export default function Subscriptions( ){
         <div className="container text-center flex flex-col justify-center items-center px-4">
           <video 
             preload="metadata" 
-            poster="/site499.png" 
+            poster="/imageFiles/site499.png" 
             className="flex justify-center items-center rounded-xl mb-12" autoPlay loop>          
-            <source src="/site499.mp4" type="video/mp4" />
+            <source src="/imageFiles/site499.mp4" type="video/mp4" />
               Seu navegador não suporta a tag de vídeo.
           </video>
           <div className="flex sm:flex-row flex-col items-center justify-center gap-12 text-sm">
