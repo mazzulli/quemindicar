@@ -14,7 +14,7 @@ import { getCategories } from "@/lib/actions/categories"
 import { getProviders } from "@/lib/actions/providers"
 import { createRating } from "@/lib/actions/ratings"
 import { Pagination } from "@/components/pagination"
-import logoQuemIndicar  from "../public/quemIndicarLogov2.png"
+import logoQuemIndicar  from "../public/logo-q.png"
 import { ProviderDetailsModal } from "@/components/provider-details-modal"
 
 interface Category {
@@ -170,8 +170,12 @@ export default function HomePage() {
         <div className="container mx-auto px-4 py-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-340 h-240 flex items-center justify-center backdrop-blur-sm">
-                <Image src={logoQuemIndicar} alt="Logo Quem Indicar" width={340} height={240} className="mr-2" />                
+              <div className="w-340 h-240 flex items-center justify-center">
+                <Image src={logoQuemIndicar} alt="Logo Quem Indicar"
+                  width={100} height={40} className="mr-2" />                
+                  <p className="text-5xl text-white font-bold opacity-80">Q</p>
+                  <p className="text-3xl text-white font-bold opacity-50">UEM INDICAR</p>
+                  <p className="text-5xl text-white font-bold opacity-80">?</p>
               </div>
             </div>
             <div className="flex gap-3">
@@ -271,7 +275,7 @@ export default function HomePage() {
         </div>
 
         {/* Lista de Prestadores com cards menores - até 6 por linha */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
+        <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6">
           {prestadoresPaginados?.map((prestador, index) => {
             const categoriaInfo = getCategoriaInfo(prestador.category.name)
             return (
