@@ -178,8 +178,8 @@ export default function DashboardPage() {
         {/* Header */}
         <header className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 shadow-xl">
           <div className="container mx-auto px-4 py-6">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
+            <div className="flex items-center justify-between flex-col md:flex-row sm:flex-row gap-4">
+              <div className="flex items-center  gap-3">
                 <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
                   <BarChart3 className="w-6 h-6 text-white" />
                 </div>
@@ -188,12 +188,12 @@ export default function DashboardPage() {
                   <p className="text-white/80 text-sm">Visão geral dos prestadores de serviços</p>
                 </div>
               </div>
-              <div className="flex items-center gap-3">
-                <div className="text-white/90 text-sm">
+              <div className="flex flex-col sm:flex-row md:flex-col items-center gap-3">
+                <div className="text-white/90 text-sm mb-8">
                   <p className="font-medium">Olá, {user?.name}</p>
                   <p className="text-white/70 text-xs">{user?.email}</p>
                 </div>
-                <div className="flex gap-3">
+                <div className="flex sm:flex-row flex-wrap gap-3">
                   {user?.role === "Administrator" && (                    
                     <>
                       <Button
