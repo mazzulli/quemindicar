@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useMemo, useEffect } from "react"
-import { Search, Phone, Mail, Globe, Instagram, Facebook, Youtube, Star, MapPin, Sparkles, LogIn, InstagramIcon } from "lucide-react"
+import { Search, Phone, Mail, Globe, Instagram, Facebook, Youtube, Star, MapPin, Sparkles, LogIn, InstagramIcon, RocketIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -168,14 +168,16 @@ export default function HomePage() {
       {/* Header com gradiente vibrante */}
       <header className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 shadow-xl">
         <div className="container mx-auto px-4 py-6">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between flex-col sm:flex-row ">
             <div className="flex items-center gap-3">
-              <div className="w-340 h-240 flex items-center justify-center">
+              <div className="w-340 h-240 flex flex-col sm:flex-row items-center justify-center mb-8">
                 <Image src={logoQuemIndicar} alt="Logo Quem Indicar"
                   width={100} height={40} className="mr-2" />                
-                  <p className="text-5xl text-white font-bold opacity-80">Q</p>
-                  <p className="text-3xl text-white font-bold opacity-50">UEM INDICAR</p>
-                  <p className="text-5xl text-white font-bold opacity-80">?</p>
+                  <div className="flex flex-row items-center">
+                    <p className="text-5xl text-white font-bold opacity-80">Q</p>
+                    <p className="text-3xl text-white font-bold opacity-50">UEM INDICAR</p>
+                    <p className="text-5xl text-white font-bold opacity-80">?</p>
+                  </div>
               </div>
             </div>
             <div className="flex gap-3">
@@ -184,7 +186,7 @@ export default function HomePage() {
                   variant="secondary"
                   className="bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur-sm transition-all duration-300 hover:scale-105"
                 >
-                  <LogIn className="w-4 h-4 mr-2" />
+                  <RocketIcon className="w-4 h-4 mr-2" />
                   Consulte nossos planos
                 </Button>
               </Link>
@@ -317,11 +319,11 @@ export default function HomePage() {
                         categoryInfo={categoriaInfo}
                         onRatingSubmit={handleRatingSubmit}
                       >
-                        <CardTitle className="text-sm group-hover:text-indigo-600 transition-colors duration-300 truncate cursor-pointer hover:underline">
+                        <CardTitle className="sm:text-sm text-3xl group-hover:text-indigo-600 transition-colors duration-300 truncate cursor-pointer hover:underline">
                           {prestador.title}
                         </CardTitle>
                       </ProviderDetailsModal>                        
-                      <CardDescription className="text-xs font-medium text-gray-600 truncate">
+                      <CardDescription className="sm:text-xs text-2xl font-medium text-gray-600 truncate">
                         {prestador.subtitle}
                       </CardDescription>
                     </div>
@@ -329,10 +331,10 @@ export default function HomePage() {
                 </CardHeader>
 
                 <CardContent className="space-y-3 px-3 pb-3">
-                  <p className="text-xs text-gray-600 line-clamp-2 leading-relaxed">{prestador.description}</p>
+                  <p className="sm:text-xs text-1xl  text-gray-600 line-clamp-2 leading-relaxed">{prestador.description}</p>
 
                   {prestador.address && (
-                    <div className="flex items-center gap-1 text-xs text-gray-500">
+                    <div className="flex items-center gap-1 sm:text-xs text-1xl  text-gray-500">
                       <MapPin className="w-3 h-3 flex-shrink-0" />
                       <span className="truncate">{prestador.address}</span>
                     </div>
@@ -341,22 +343,24 @@ export default function HomePage() {
                   {/* Contatos com ícones coloridos - versão compacta */}
                   <div className="space-y-2 pt-2 border-t border-gray-100">
                     <div className="flex items-center gap-2 text-xs group/contact hover:bg-green-50 p-1 rounded-lg transition-colors">
-                      <div className="w-5 h-5 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center flex-shrink-0">
-                        <Phone className="w-2.5 h-2.5 text-white" />
+                      <div className="w-10 h-10 sm:w-5 sm:h-5 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center flex-shrink-0">
+                        <Phone className="w-5 h-5 sm:w-2.5 sm:h-2.5 text-white" />
                       </div>
                                             
-                      <Link href={`https://wa.me/55${prestador.phone.trim().replaceAll(" ","").replaceAll("-","")}?text=Olá gostaria de mais informações sobre seus serviços...`} target="_blank" className="text-green-600 hover:underline font-medium truncate">
+                      <Link href={`https://wa.me/55${prestador.phone.trim().replaceAll(" ","").replaceAll("-","")}?text=Olá gostaria de mais informações sobre seus serviços...`} 
+                        target="_blank" 
+                        className="text-green-600 hover:underline font-medium truncate text-xl">
                         <span className="font-medium truncate">{prestador.phone}</span>                        
                       </Link>
                     </div>
 
                     <div className="flex items-center gap-2 text-xs group/contact hover:bg-blue-50 p-1 rounded-lg transition-colors">
-                      <div className="w-5 h-5 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full flex items-center justify-center flex-shrink-0">
-                        <Mail className="w-2.5 h-2.5 text-white" />
+                      <div className="w-10 h-10 sm:w-5 sm:h-5 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full flex items-center justify-center flex-shrink-0">
+                        <Mail className="w-5 h-5 sm:w-2.5 sm:h-2.5 text-white" />
                       </div>
                       <a
                         href={`mailto:${prestador.email}`}
-                        className="text-blue-600 hover:underline font-medium truncate"
+                        className="text-blue-600 hover:underline font-medium truncate text-xl"
                       >
                         {prestador.email}
                       </a>
@@ -364,14 +368,14 @@ export default function HomePage() {
 
                     {prestador.website && (
                       <div className="flex items-center gap-2 text-xs group/contact hover:bg-purple-50 p-1 rounded-lg transition-colors">
-                        <div className="w-5 h-5 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full flex items-center justify-center flex-shrink-0">
-                          <Globe className="w-2.5 h-2.5 text-white" />
+                        <div className="sm:w-5 sm:h-5 w-10 h-10 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full flex items-center justify-center flex-shrink-0">
+                          <Globe className="w-5 h-5 sm:w-2.5 sm:h-2.5 text-white" />
                         </div>
                         <a
                           href={prestador.website}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-purple-600 hover:underline font-medium truncate"
+                          className="text-purple-600 hover:underline font-medium truncate text-xl"
                         >
                           Visitar site
                         </a>
@@ -387,17 +391,17 @@ export default function HomePage() {
                           href={`https://www.instagram.com/${prestador.instagram}`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-purple-600 hover:underline font-medium truncate"
+                          className="text-purple-600 hover:underline font-medium truncate text-xl"
                         >
-                          <Instagram className="w-6 h-6" />
+                          <Instagram className="sm:w-6 sm:h-6 w-10 h-10" />
                         </a>
                       )}
                       {prestador.facebook && (
                         <Button
                           size="sm"
-                          className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white border-0 transition-all duration-300 hover:scale-110 shadow-lg h-6 w-6 p-0"
+                          className="sm:w-5 sm:h-5 w-9 h-9 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white border-0 transition-all duration-300 hover:scale-110 shadow-lg p-0"
                         >
-                          <Facebook className="w-3 h-3" />
+                          <Facebook className="sm:w-5 sm:h-5 w-10 h-10" />
                         </Button>
                       )}
                       {prestador.youtube && (
@@ -405,7 +409,7 @@ export default function HomePage() {
                           size="sm"
                           className="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white border-0 transition-all duration-300 hover:scale-110 shadow-lg h-6 w-6 p-0"
                         >
-                          <Youtube className="w-3 h-3" />
+                          <Youtube className="w-6 h-6" />
                         </Button>
                       )}
                     </div>
