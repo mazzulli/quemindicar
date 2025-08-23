@@ -168,7 +168,7 @@ export default function HomePage() {
       {/* Header com gradiente vibrante */}
       <header className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 shadow-xl">
         <div className="container mx-auto px-4 py-6">
-          <div className="flex items-center justify-between flex-col sm:flex-row ">
+          <div className="flex items-center justify-between flex-col sm:flex-row">
             <div className="flex items-center gap-3">
               <div className="w-340 h-240 flex flex-col sm:flex-row items-center justify-center mb-8">
                 <Image src={logoQuemIndicar} alt="Logo Quem Indicar"
@@ -349,7 +349,7 @@ export default function HomePage() {
                                             
                       <Link href={`https://wa.me/55${prestador.phone.trim().replaceAll(" ","").replaceAll("-","")}?text=Olá gostaria de mais informações sobre seus serviços...`} 
                         target="_blank" 
-                        className="text-green-600 hover:underline font-medium truncate text-xl">
+                        className="text-green-600 hover:underline font-medium truncate text-xl sm:text-sm">
                         <span className="font-medium truncate">{prestador.phone}</span>                        
                       </Link>
                     </div>
@@ -360,7 +360,7 @@ export default function HomePage() {
                       </div>
                       <a
                         href={`mailto:${prestador.email}`}
-                        className="text-blue-600 hover:underline font-medium truncate text-xl"
+                        className="text-blue-600 hover:underline font-medium truncate text-xl  sm:text-sm"
                       >
                         {prestador.email}
                       </a>
@@ -375,7 +375,7 @@ export default function HomePage() {
                           href={prestador.website}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-purple-600 hover:underline font-medium truncate text-xl"
+                          className="text-purple-600 hover:underline font-medium truncate text-xl sm:text-sm"
                         >
                           Visitar site
                         </a>
@@ -391,7 +391,7 @@ export default function HomePage() {
                           href={`https://www.instagram.com/${prestador.instagram}`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-purple-600 hover:underline font-medium truncate text-xl"
+                          className="text-purple-600 hover:underline font-medium truncate text-xl  sm:text-sm"
                         >
                           <Instagram className="sm:w-6 sm:h-6 w-10 h-10" />
                         </a>

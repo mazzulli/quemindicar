@@ -16,12 +16,14 @@ const Header = ( {title, description, path } : HeaderProps) => {
         <div className="container mx-auto px-4 py-6">
           <div className="flex items-center justify-between sm:flex-row flex-col">
             <div className="flex items-center gap-3">
-              <div className="w-340 h-240 flex items-center justify-center">
+              <div className="w-340 h-240 flex flex-col sm:flex-row items-center justify-center mb-8 sm:m-0">
                 <Image src={logoQuemIndicar} alt="Logo Quem Indicar"
                   width={100} height={40} className="mr-2" />                
-                  <p className="text-5xl text-white font-bold opacity-80">Q</p>
-                  <p className="text-3xl text-white font-bold opacity-50">UEM INDICAR</p>
-                  <p className="text-5xl text-white font-bold opacity-80">?</p>
+                  <div className="flex flex-row items-center">
+                    <p className="text-5xl text-white font-bold opacity-80">Q</p>
+                    <p className="text-3xl text-white font-bold opacity-50">UEM INDICAR</p>
+                    <p className="text-5xl text-white font-bold opacity-80">?</p>
+                  </div>
               </div>
             </div>
             <div className="text-white text-center">
