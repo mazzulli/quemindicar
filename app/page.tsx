@@ -16,6 +16,7 @@ import { createRating } from "@/lib/actions/ratings"
 import { Pagination } from "@/components/pagination"
 import logoQuemIndicar  from "../public/logo-q.png"
 import { ProviderDetailsModal } from "@/components/provider-details-modal"
+import { ReviewsModal } from "@/components/reviews-modal"
 
 interface Category {
   id: number
@@ -55,6 +56,8 @@ export default function HomePage() {
   const [categories, setCategories] = useState<Category[] | undefined>([])
   const [providers, setProviders] = useState<Provider[] | undefined>([])
   const [loading, setLoading] = useState(true)
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [providerId, setProviderId] = useState<number | null>(null)
 
   // Estados da paginação
   const [currentPage, setCurrentPage] = useState(1)
@@ -276,14 +279,14 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* Lista de Prestadores com cards menores - até 6 por linha */}
+        {/* Lista de Prestadores com cards menores - até 5 por linha */}
         <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6">
           {prestadoresPaginados?.map((prestador, index) => {
             const categoriaInfo = getCategoriaInfo(prestador.category.name)
             return (
               <Card
                 key={prestador.id}
-                className="group overflow-hidden hover:shadow-2xl transition-all duration-500 hover:scale-105 bg-white/90 backdrop-blur-sm border-2 border-white/50 rounded-2xl animate-fade-in hover:animate-pulse-glow"
+                className="group overflow-hidden sm:hover:shadow-2xl transition-all duration-500 sm:hover:scale-105 bg-white/90 backdrop-blur-sm border-2 border-white/50 rounded-2xl animate-fade-in hover:animate-pulse-glow"
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
                 <div className="aspect-square relative overflow-hidden rounded-t-2xl">
@@ -303,9 +306,14 @@ export default function HomePage() {
                     </Badge>
                   </div>
                   <div className="absolute bottom-2 left-2 flex items-center gap-1 bg-white/90 backdrop-blur-sm rounded-full px-2 py-1 shadow-lg">
-                    <Star className="w-3 h-3 text-yellow-500 fill-current" />
-                    <span className="text-xs font-semibold">{prestador.averageRating.toFixed(1)}</span>
-                    <span className="text-xs text-gray-600">({prestador.ratingsCount})</span>
+                    <Button onClick={() => {
+                      setIsModalOpen(true)
+                      setProviderId(prestador.id)
+                    }} variant="ghost" size="sm" className="p-0 m-0">
+                      <Star className="w-3 h-3 text-yellow-500 fill-current" />
+                      <span className="text-xs font-semibold">{prestador.averageRating.toFixed(1)}</span>
+                      <span className="text-xs text-gray-600">({prestador.ratingsCount})</span>                      
+                    </Button>
                   </div>
                 </div>
 
@@ -454,8 +462,9 @@ export default function HomePage() {
             <p className="text-gray-500 text-xl font-medium">Nenhum prestador encontrado</p>
             <p className="text-gray-400 text-sm mt-2">Tente ajustar os filtros de busca</p>
           </div>
-        )}
+        )}        
       </main>
+      <ReviewsModal isOpen={isModalOpen} id={providerId}  onClose={() => setIsModalOpen(false)} />
     </div>
   )
 }

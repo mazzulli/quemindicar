@@ -76,7 +76,7 @@ export function RatingModal({ prestador, onRatingSubmit }: RatingModalProps) {
 
     try {
       // Simular delay de envio
-      await new Promise((resolve) => setTimeout(resolve, 1000))
+      //await new Promise((resolve) => setTimeout(resolve, 1000))
 
       onRatingSubmit(prestador.id, rating, comment, reviewerName.trim())
 

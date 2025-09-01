@@ -37,7 +37,7 @@ export const WelcomeEmail = ({
       <Container style={container}>
         <Img
          src={'https://www.quemindicar.com.br/imageFiles/logo-b.png'}
-          width="170"
+          width="240"
           height="170"
           alt="Quem Indicar"
           style={logo}
