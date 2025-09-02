@@ -177,7 +177,12 @@ export async function createProvider(formData: FormData) {
       where: { email: validatedData.email },
     });
 
-    if (emailExists) {
+    console.log("emailExists salvando dados: ", emailExists?.email);
+    if (
+      emailExists?.email &&
+      emailExists.email !== "sememail@email.com.br" &&
+      emailExists.email !== "mazzulli@live.com"
+    ) {
       return {
         success: false,
         error: "Já existe um prestador com este e-mail",
