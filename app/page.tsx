@@ -449,7 +449,7 @@ export default function HomePage() {
               totalItems={totalItems}
               onPageChange={handlePageChange}
               onItemsPerPageChange={handleItemsPerPageChange}
-              itemsPerPageOptions={[12, 18, 24, 30, 48, 60]}
+              itemsPerPageOptions={[15, 20, 25, 30, 45, 60]}
             />
           </div>
         )}
