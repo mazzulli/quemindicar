@@ -62,7 +62,7 @@ export default function HomePage() {
 
   // Estados da paginação
   const [currentPage, setCurrentPage] = useState(1)
-  const [itemsPerPage, setItemsPerPage] = useState(18) // Padrão para 6 cards por linha em telas grandes
+  const [itemsPerPage, setItemsPerPage] = useState(20) // Padrão para 6 cards por linha em telas grandes
 
   useEffect(() => {
     loadData()
@@ -397,7 +397,7 @@ export default function HomePage() {
                     <div className="flex gap-1">
                       {prestador.instagram && (                       
                         <a
-                          href={`https://www.instagram.com/${prestador.instagram}`}
+                          href={`https://www.instagram.com/${prestador.instagram.startsWith("@") ? prestador.instagram.slice(1) : prestador.instagram}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="text-purple-600 hover:underline font-medium truncate text-xl  sm:text-sm"
@@ -406,20 +406,24 @@ export default function HomePage() {
                         </a>
                       )}
                       {prestador.facebook && (
-                        <Button
-                          size="sm"
-                          className="sm:w-5 sm:h-5 w-9 h-9 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white border-0 transition-all duration-300 hover:scale-110 shadow-lg p-0"
+                        <a
+                          href={prestador.facebook}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-purple-600 hover:underline font-medium truncate text-xl  sm:text-sm"
                         >
-                          <Facebook className="sm:w-5 sm:h-5 w-10 h-10" />
-                        </Button>
+                          <Facebook className="sm:w-6 sm:h-6 w-10 h-10" />
+                        </a>
                       )}
                       {prestador.youtube && (
-                        <Button
-                          size="sm"
-                          className="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white border-0 transition-all duration-300 hover:scale-110 shadow-lg h-6 w-6 p-0"
+                        <a
+                          href={prestador.youtube}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-purple-600 hover:underline font-medium truncate text-xl  sm:text-sm"
                         >
-                          <Youtube className="w-6 h-6" />
-                        </Button>
+                          <Youtube className="sm:w-6 sm:h-6 w-10 h-10" />
+                        </a>
                       )}
                     </div>
 

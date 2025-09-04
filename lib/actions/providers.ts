@@ -47,7 +47,9 @@ export async function getProviders(filters?: {
         },
       },
       orderBy: {
-        createdAt: "desc",
+        ratings: {
+          _count: "desc",
+        },
       },
     });
 
