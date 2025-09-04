@@ -17,6 +17,7 @@ import { Pagination } from "@/components/pagination"
 import logoQuemIndicar  from "../public/logo-q.png"
 import { ProviderDetailsModal } from "@/components/provider-details-modal"
 import { ReviewsModal } from "@/components/reviews-modal"
+import { formatPhoneNumber } from "@/lib/utils"
 
 interface Category {
   id: number
@@ -355,10 +356,10 @@ export default function HomePage() {
                         <Phone className="w-5 h-5 sm:w-2.5 sm:h-2.5 text-white" />
                       </div>
                                             
-                      <Link href={`https://wa.me/55${prestador.phone.trim().replaceAll(" ","").replaceAll("-","")}?text=Olá gostaria de mais informações sobre seus serviços...`} 
+                      <Link href={`https://wa.me/55${prestador.phone.trim().replaceAll(" ","").replaceAll("-","")}?text=Olá! Vi seu anúncio no site www.quemindicar.com.br e gostaria de mais informações sobre seus serviços...`} 
                         target="_blank" 
                         className="text-green-600 hover:underline font-medium truncate text-xl sm:text-sm">
-                        <span className="font-medium truncate">{prestador.phone}</span>                        
+                        <span className="font-medium truncate">{formatPhoneNumber(prestador.phone)}</span>                        
                       </Link>
                     </div>
 

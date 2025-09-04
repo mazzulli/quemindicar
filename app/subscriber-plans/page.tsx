@@ -207,7 +207,7 @@ export default function Subscriptions( ){
               <Mail className="w-8 h-8 text-pink-700 mx-auto" />
               <p>contato@ssitconsulting.com.br</p>
             </div>            
-            <Link href="https://wa.me/+5511992281207?text=Olá, gostaria de mais informações sobre a criação de site por R$ 499,00..." target="_blank" className="flex flex-col items-center">
+            <Link href="https://wa.me/+5511992281207?text=Olá! Vi seu anúncio no www.quemindicar.com.br e gostaria de mais informações sobre a criação de site por R$ 499,00..." target="_blank" className="flex flex-col items-center">
               <PhoneCall className="w-8 h-8 text-pink-700 mx-auto" />
               <p>+55 11 99228-1207</p>
             </Link>            
