@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { useToast } from "@/hooks/use-toast"
 import Link from "next/link"
 import { ProtectedRoute } from "@/components/protected-route"
@@ -213,6 +213,13 @@ export default function CadastroPage() {
               <CardHeader>
                 <CardTitle>Informações Básicas</CardTitle>
               </CardHeader>
+              <CardDescription className="px-6 mt-4 mb-8 text-sm text-gray-600">
+                Ao enviar meus dados eu autorizo ao proprietário do site www.quemindicar.com.br a utilizar 
+                e compartilhar minhas informações para divulgação destes dados ao público através do acesso 
+                ao site www.quemindicar.com.br. Compreendo que a minha autorização é livre e pode ser revogada 
+                a qualquer momento. Também assumo que li e entendi os Termos de Uso e a Política de Privacidade 
+                que estão disponíveis na página de inscrição.
+              </CardDescription>
               <CardContent className="space-y-6">
                 {/* Upload de Foto */}
                 <ImageUpload onImageChange={handleImageChange} disabled={submitting} />
