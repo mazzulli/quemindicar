@@ -26,7 +26,7 @@ services:
       - .env
     depends_on:
       - database    
-    command: sh -c "npx prisma generate && npx prisma migrate dev && npm start -- --hostname 0.0.0.0"
+    command: sh -c "npx prisma migrate dev && npx prisma generate && npm start -- --hostname 0.0.0.0"
     volumes:
       - application-data:/app/public
 
