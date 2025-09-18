@@ -101,11 +101,14 @@ export default function PrestadoresPage() {
 
   useEffect(() => {
     loadData()
-  }, [])
+  }, [user?.email])
 
   const loadData = async () => {
     try {
-      const [categoriesResult, providersResult] = await Promise.all([getCategories(), getProviders()])
+      const [categoriesResult, providersResult] =  
+      user?.role ==='Administrator' ? 
+        await Promise.all([getCategories(), getProviders()]) : 
+        await Promise.all([getCategories(), getProviders({ active: true, email: user?.email })])
 
       if (categoriesResult.success) {
         setCategories(categoriesResult.data)

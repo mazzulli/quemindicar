@@ -87,10 +87,7 @@ export default function DashboardPage() {
   }, [])
 
   const loadDashboardData = async () => {    
-    try {
-      if(user?.role === "Customer"){
-        
-      }
+    try {            
       const [statsResult, categoriesResult, providersResult, growthResult] = await Promise.all([
         getDashboardStats(),
         getCategoriesStats(),
@@ -173,7 +170,7 @@ export default function DashboardPage() {
   }
 
   return (
-    <ProtectedRoute>
+    <ProtectedRoute>      
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
         {/* Header */}
         <header className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 shadow-xl">
@@ -191,7 +188,7 @@ export default function DashboardPage() {
               <div className="flex flex-col sm:flex-row md:flex-col items-center gap-3">
                 <div className="text-white/90 text-sm mb-8">
                   <p className="font-medium">Olá, {user?.name}</p>
-                  <p className="text-white/70 text-xs">{user?.email}</p>
+                  <p className="text-white/70 text-xs">{user?.email}</p>                  
                 </div>
                 <div className="flex sm:flex-row flex-wrap gap-3">
                   {user?.role === "Administrator" && (                    
@@ -229,15 +226,27 @@ export default function DashboardPage() {
                   )}
 
                   {user?.role === "Customer" && (                    
-                    <Link href={`/cadastro`}>
-                      <Button
-                        variant="secondary"
-                        className="bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur-sm transition-all duration-300 hover:scale-105"
-                      >
-                        <Users className="w-4 h-4 mr-2" />
-                        Seu cadastro
-                      </Button>
-                    </Link>
+                    <>
+                      <Link href="/prestadores">
+                        <Button
+                          variant="secondary"
+                          className="bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur-sm transition-all duration-300 hover:scale-105"
+                        >
+                          <Users className="w-4 h-4 mr-2" />
+                          Gerenciar Anúncios
+                        </Button>
+                      </Link>
+
+                      <Link href={`/cadastro`}>
+                        <Button
+                          variant="secondary"
+                          className="bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur-sm transition-all duration-300 hover:scale-105"
+                        >
+                          <Users className="w-4 h-4 mr-2" />
+                          Nova Divulgação
+                        </Button>
+                      </Link>
+                    </>
                   )}
 
                   <Button
@@ -335,7 +344,7 @@ export default function DashboardPage() {
                     {dashboardStats.accessGrowth}% este mês
                   </span>
                 </p>
-                <p className="text-xs text-purple-300 mt-1">Dados simulados</p>
+                <p className="text-xs text-purple-300 mt-1">Dados</p>
               </CardContent>
             </Card>
           </div>
@@ -395,7 +404,7 @@ export default function DashboardPage() {
                   <Eye className="w-5 h-5 text-green-600" />
                   Top 10 Mais Acessados
                 </CardTitle>
-                <CardDescription>Prestadores com maior número de visualizações (simulado)</CardDescription>
+                <CardDescription>Prestadores com maior número de visualizações</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
