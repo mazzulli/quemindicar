@@ -193,7 +193,7 @@ export default function CadastroPage() {
                   <p className="text-white/80 text-sm">Adicione um novo profissional à plataforma</p>
                 </div>
               </div>              
-              <Link href={`${user?.role === "Customer" ? "/dashboard" : "/prestadores" }`}>
+              <Link href={"/prestadores"}>
                 <Button
                   variant="secondary"
                   className="bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur-sm transition-all duration-300 hover:scale-105"

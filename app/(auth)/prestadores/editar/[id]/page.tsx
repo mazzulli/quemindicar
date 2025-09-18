@@ -91,6 +91,10 @@ export default function EditarPrestadorPage({ params }: { params: { id: string }
         getProviderById(Number(params.id)),
       ])
 
+      if(providerResult.data?.email !== user?.email) {
+        router.push("/prestadores")
+      }
+
       if (categoriesResult.success) {
         setCategories(categoriesResult.data)
       }
@@ -250,16 +254,7 @@ export default function EditarPrestadorPage({ params }: { params: { id: string }
         {/* Header */}
         <header className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 shadow-xl">
           <div className="container mx-auto px-4 py-6">
-            <div className="flex items-center gap-4">
-              <Link href="/prestadores">
-                <Button
-                  variant="secondary"
-                  className="bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur-sm transition-all duration-300 hover:scale-105"
-                >
-                  <ArrowLeft className="w-4 h-4 mr-2" />
-                  Voltar
-                </Button>
-              </Link>
+            <div className="flex items-center justify-between gap-4">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
                   <Save className="w-6 h-6 text-white" />
@@ -269,6 +264,15 @@ export default function EditarPrestadorPage({ params }: { params: { id: string }
                   <p className="text-white/80 text-sm">Atualize as informações de {provider.title}</p>
                 </div>
               </div>
+              <Link href="/prestadores">
+                <Button
+                  variant="secondary"
+                  className="bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur-sm transition-all duration-300 hover:scale-105"
+                >
+                  <ArrowLeft className="w-4 h-4 mr-2" />
+                  Voltar
+                </Button>
+              </Link>
             </div>
           </div>
         </header>

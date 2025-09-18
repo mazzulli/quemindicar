@@ -11,6 +11,7 @@ export async function getProviders(filters?: {
   search?: string;
   categoryId?: number;
   active?: boolean;
+  email?: string;
 }) {
   try {
     const where: any = {};
@@ -29,6 +30,10 @@ export async function getProviders(filters?: {
 
     if (filters?.active !== undefined) {
       where.active = filters.active;
+    }
+
+    if (filters?.email !== undefined) {
+      where.email = filters.email;
     }
 
     const providers = await prisma.provider.findMany({
