@@ -203,13 +203,23 @@ export default function DashboardPage() {
                         Atualizar
                       </Button>
                   
+                      <Link href="/users">
+                        <Button
+                          variant="secondary"
+                          className="bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur-sm transition-all duration-300 hover:scale-105"
+                        >
+                          <Users className="w-4 h-4 mr-2" />
+                          Usuários
+                        </Button>
+                      </Link>
+
                       <Link href="/prestadores">
                         <Button
                           variant="secondary"
                           className="bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur-sm transition-all duration-300 hover:scale-105"
                         >
                           <Users className="w-4 h-4 mr-2" />
-                          Gerenciar Prestadores
+                          Prestadores
                         </Button>
                       </Link>
                     

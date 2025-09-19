@@ -2,17 +2,34 @@ import { z } from "zod";
 
 // User validations
 export const userSchema = z.object({
+  id: z.string(),
   name: z
     .string()
     .min(2, "Nome é obrigatório")
     .max(80, "Nome deve ter no máximo 80 caracteres")
     .trim(),
   email: z.string().email(),
-  passwordHash: z.string(),
-  role: z.enum(["Admin", "Customer"], {
+  passwordHash: z
+    .string()
+    .min(6, "Senha deve ter no mínimo 6 caracteres")
+    .max(10, "Senha deve ter no máximo 10 caracteres"),
+  role: z.enum(["Administrator", "Customer"], {
     errorMap: () => ({ message: "Role deve ser 'Admin' ou 'Customer'" }),
   }),
   active: z.boolean(),
+});
+
+export const userUpdateSchema = z.object({
+  id: z.string(),
+  name: z
+    .string()
+    .min(2, "Nome é obrigatório")
+    .max(80, "Nome deve ter no máximo 80 caracteres")
+    .trim(),
+  email: z.string().email(),
+  role: z.enum(["Administrator", "Customer"], {
+    errorMap: () => ({ message: "Role deve ser 'Admin' ou 'Customer'" }),
+  }),
 });
 
 // Category validations

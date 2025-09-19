@@ -1,7 +1,7 @@
 import type React from "react"
 import { AuthProvider } from "@/contexts/auth-context"
 
-export default function DashboardLayout({
+export default function RegisterLayout({
   children,
 }: {
   children: React.ReactNode
