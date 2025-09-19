@@ -84,9 +84,9 @@ export default function PrestadoresPage() {
   const { user } = useAuth()
   const router = useRouter()
 
-  if (!user) {
-    router.push("/dashboard")
-  }
+  // if (!user) {
+  //   router.push("/dashboard")
+  // }
 
   const [categories, setCategories] = useState<Category[] | undefined>([])
   const [providers, setProviders] = useState<Provider[] | undefined>([])

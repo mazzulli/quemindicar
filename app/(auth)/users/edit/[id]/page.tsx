@@ -33,9 +33,9 @@ export default function CustomerEditPage({ params }: { params: { id: string } })
   const { user } = useAuth()
   const router = useRouter()
 
-  if(user?.role !== "Administrator") {
-    router.push("/dashboard")
-  }
+  // if(user?.role !== "Administrator") {
+  //   router.push("/dashboard")
+  // }
   
   const { toast } = useToast()
   

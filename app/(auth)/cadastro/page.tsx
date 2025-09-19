@@ -30,9 +30,9 @@ export default function CadastroPage() {
   const { user } = useAuth()
   const router = useRouter()
 
-  if (!user) {
-    router.push("/dashboard")
-  }
+  // if (!user) {
+  //   router.push("/dashboard")
+  // }
 
   const { toast } = useToast()
   const [categories, setCategories] = useState<Category[] | undefined>([])
@@ -46,7 +46,7 @@ export default function CadastroPage() {
     categoryId: "",
     description: "",
     phone: "",
-    email: user?.email || "",
+    email: user?.email || "sememail@email.com.br",
     address: "",
     website: "",
     instagram: "",
@@ -125,10 +125,10 @@ export default function CadastroPage() {
       if (selectedImage) {
         submitFormData.append("photo", selectedImage)
       }
-
-      //submitFormData.append("email", user?.email || "sememail@email.com.br")
+      
+      submitFormData.append("email", user?.email || "sememail@email.com.br")
       console.log("Submitting form data:", Object.fromEntries(submitFormData.entries()))
-      console.log("Submitting form data sem formatação:",submitFormData)
+      console.log("Submitting form data sem formatação:",JSON.stringify(Object.fromEntries(submitFormData.entries())))
 
       const result = await createProvider(submitFormData)
 
@@ -145,7 +145,7 @@ export default function CadastroPage() {
           categoryId: "",
           description: "",
           phone: "",
-          email: user?.email || "",
+          email: user?.email || "sememail@email.com.br",
           address: "",
           website: "",
           instagram: "",
@@ -313,7 +313,8 @@ export default function CadastroPage() {
                     <Label htmlFor="email">E-mail *</Label>
                     <Input
                       id="email"                      
-                      value={user?.email || formData.email}                                                                  
+                      value={user?.email || formData.email}                       
+                      onChange={(e) => handleInputChange("email", e.target.value)}                                           
                       disabled={submitting}
                     />
                   </div>

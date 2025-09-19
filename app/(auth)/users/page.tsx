@@ -24,9 +24,9 @@ const UsersPage = () => {
     const { user } = useAuth()
     const router = useRouter()
 
-    if (user?.role !== "Administrator") {
-        router.push("/dashboard")        
-    }
+    // if (user?.role !== "Administrator") {
+    //     router.push("/dashboard")        
+    // }
 
     const { toast } = useToast()    
     const [users, setUsers] = useState<User[] | undefined>([])

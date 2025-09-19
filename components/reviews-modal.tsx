@@ -151,7 +151,7 @@ export function ReviewsModal({ isOpen, id, onClose }: ReviewsModalProps) {
         <div className="relative">
           {/* Card da avaliação atual */}
           <Card className="min-h-[300px] min-w-4/5">
-            <CardContent className="p-6">
+            <CardContent className="p-6 w-full">
               <div className="flex flex-col items-center text-center space-y-4 w-2/3 mx-auto">
                 <Avatar className="w-16 h-16">
                   <AvatarFallback className="bg-primary text-primary-foreground text-lg font-semibold">
