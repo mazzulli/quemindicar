@@ -43,6 +43,7 @@ import { ProtectedRoute } from "@/components/protected-route"
 import { useAuth } from "@/contexts/auth-context"
 import { getCategories } from "@/lib/actions/categories"
 import { getProviders, deleteProvider, toggleProviderStatus } from "@/lib/actions/providers"
+import { useRouter } from "next/navigation"
 
 interface Category {
   id: number
@@ -79,13 +80,19 @@ interface Provider {
 type SortField = "title" | "category" | "rating" | "createdAt"
 type SortOrder = "asc" | "desc"
 
-export default function PrestadoresPage() {
-  const { toast } = useToast()
+export default function PrestadoresPage() { 
   const { user } = useAuth()
+  const router = useRouter()
+
+  if (!user) {
+    router.push("/dashboard")
+  }
+
   const [categories, setCategories] = useState<Category[] | undefined>([])
   const [providers, setProviders] = useState<Provider[] | undefined>([])
   const [loading, setLoading] = useState(true)
   const [submitting, setSubmitting] = useState(false)
+  const { toast } = useToast()
 
   // Filtros
   const [searchTerm, setSearchTerm] = useState("")
@@ -129,6 +136,7 @@ export default function PrestadoresPage() {
   }
 
   const filteredAndSortedProviders = useMemo(() => {
+    
     const filtered = providers?.filter((provider) => {
       const matchesSearch =
         provider.title.toLowerCase().includes(searchTerm.toLowerCase()) ||

@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { stripe } from "@/lib/stripe";
 import { createUser, UserProps } from "@/lib/actions/users";
-import { hashPassword } from "@/lib/utils";
+import { generatePassword, hashPassword } from "@/lib/utils";
 
 import ConfirmationPage from "./components/confirmation";
 
@@ -25,7 +25,7 @@ const CheckoutReturnPage = async ({ searchParams }: { searchParams: { [key: stri
 
     if (status === 'complete') {
         const mailIndex = customerEmail.indexOf('@')
-        const initialPassword = 'qi@' +  customerEmail.substring(0, mailIndex) //generatePassword()
+        const initialPassword = 'qi@' + customerEmail.substring(0, mailIndex) + generatePassword()
 
         const hashedPassword = await hashPassword(initialPassword)
 

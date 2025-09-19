@@ -165,7 +165,11 @@ export async function createProvider(formData: FormData) {
       tiktok: formData.get("tiktok") as string,
     };
 
+    console.log("Dados recebidos de email: ", formData.get("email") as string);
+
     const validatedData = providerSchema.parse(data);
+
+    console.log("Dados validados: ", validatedData);
 
     // Check if category exists
     const category = await prisma.category.findUnique({
@@ -176,23 +180,6 @@ export async function createProvider(formData: FormData) {
       return {
         success: false,
         error: "Categoria não encontrada",
-      };
-    }
-
-    // valida email
-    const emailExists = await prisma.provider.findFirst({
-      where: { email: validatedData.email },
-    });
-
-    console.log("emailExists salvando dados: ", emailExists?.email);
-    if (
-      emailExists?.email &&
-      emailExists.email !== "sememail@email.com.br" &&
-      emailExists.email !== "mazzulli@live.com"
-    ) {
-      return {
-        success: false,
-        error: "Já existe um prestador com este e-mail",
       };
     }
 
@@ -219,6 +206,7 @@ export async function createProvider(formData: FormData) {
       subtitle: validatedData.subtitle || null,
       description: validatedData.description || null,
       photoUrl,
+      email: validatedData.email,
       address: validatedData.address || null,
       website: validatedData.website || null,
       instagram: validatedData.instagram || null,

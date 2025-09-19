@@ -17,9 +17,9 @@ export async function verifyPassword(password: string, hashedPassword: string) {
 }
 
 export function generatePassword() {
-  const length = 8;
+  const length = 4;
   const chars =
-    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+~`|}{[]:;?><,./-=";
+    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%&";
 
   let password = "";
   for (let i = 0; i < length; i++) {

@@ -16,6 +16,7 @@ import { getCategories } from "@/lib/actions/categories"
 import { createProvider } from "@/lib/actions/providers"
 import { ImageUpload } from "@/components/image-upload"
 import { useAuth } from "@/contexts/auth-context"
+import { useRouter } from "next/navigation"
 
 interface Category {
   id: number
@@ -27,6 +28,12 @@ interface Category {
 
 export default function CadastroPage() {
   const { user } = useAuth()
+  const router = useRouter()
+
+  if (!user) {
+    router.push("/login")
+  }
+
   const { toast } = useToast()
   const [categories, setCategories] = useState<Category[] | undefined>([])
   const [loading, setLoading] = useState(true)
@@ -39,7 +46,7 @@ export default function CadastroPage() {
     categoryId: "",
     description: "",
     phone: "",
-    email: user?.email || "sememail@email.com.br",
+    email: user?.email || "",
     address: "",
     website: "",
     instagram: "",
@@ -100,6 +107,7 @@ export default function CadastroPage() {
     }
 
     setSubmitting(true)
+
     try {
       // Create FormData for server action
       const submitFormData = new FormData()
@@ -118,8 +126,9 @@ export default function CadastroPage() {
         submitFormData.append("photo", selectedImage)
       }
 
-      submitFormData.append("email", user?.email || "sememail@email.com.br")
+      //submitFormData.append("email", user?.email || "sememail@email.com.br")
       console.log("Submitting form data:", Object.fromEntries(submitFormData.entries()))
+      console.log("Submitting form data sem formatação:",submitFormData)
 
       const result = await createProvider(submitFormData)
 
@@ -305,7 +314,7 @@ export default function CadastroPage() {
                     <Input
                       id="email"                      
                       value={user?.email || formData.email}                                                                  
-                      disabled
+                      disabled={submitting}
                     />
                   </div>
                 </div>
