@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { ArrowLeft, Plus, Edit, Trash2, Save, X, Filter } from "lucide-react"
+import { ArrowLeft, Plus, Edit, Trash2, Save, X, Filter, Router } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -22,6 +22,7 @@ import Link from "next/link"
 import { ProtectedRoute } from "@/components/protected-route"
 import { useAuth } from "@/contexts/auth-context"
 import { getCategories, createCategory, updateCategory, deleteCategory } from "@/lib/actions/categories"
+import { useRouter } from "next/navigation"
 
 interface Category {
   id: number
@@ -32,6 +33,13 @@ interface Category {
 }
 
 export default function CategoriasPage() {
+  const { user } = useAuth()
+  const router = useRouter()
+
+  if (!user) {
+    router.push("/dashboard")
+  }
+
   const { toast } = useToast()
   const [categories, setCategories] = useState<Category[] | undefined>([])
   const [loading, setLoading] = useState(true)
@@ -39,8 +47,7 @@ export default function CategoriasPage() {
   const [editandoId, setEditandoId] = useState<number | null>(null)
   const [nomeEditando, setNomeEditando] = useState("")
   const [submitting, setSubmitting] = useState(false)
-  const { user } = useAuth()
-
+  
   useEffect(() => {
     loadCategories()
   }, [])
