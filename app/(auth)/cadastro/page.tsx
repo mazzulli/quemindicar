@@ -155,6 +155,7 @@ export default function CadastroPage() {
           tiktok: "",
         })
         setSelectedImage(null)
+        router.push("/prestadores")
       } else {
         toast({
           title: "Ops",

@@ -115,7 +115,7 @@ export default function PrestadoresPage() {
       const [categoriesResult, providersResult] =  
       user?.role ==='Administrator' ? 
         await Promise.all([getCategories(), getProviders()]) : 
-        await Promise.all([getCategories(), getProviders({ active: true, email: user?.email })])
+        await Promise.all([getCategories(), getProviders({ email: user?.email })])
 
       if (categoriesResult.success) {
         setCategories(categoriesResult.data)
@@ -147,8 +147,8 @@ export default function PrestadoresPage() {
 
       const matchesStatus =
         statusFilter === "all" ||
-        (statusFilter === "active" && provider.active) ||
-        (statusFilter === "inactive" && !provider.active)
+        (statusFilter === "true" && provider.active) ||
+        (statusFilter === "false" && !provider.active)
 
       return matchesSearch && matchesCategory && matchesStatus
     })
@@ -418,8 +418,8 @@ export default function PrestadoresPage() {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">Todos os status</SelectItem>
-                      <SelectItem value="active">Ativos</SelectItem>
-                      <SelectItem value="inactive">Inativos</SelectItem>
+                      <SelectItem value="true">Ativos</SelectItem>
+                      <SelectItem value="false">Inativos</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
