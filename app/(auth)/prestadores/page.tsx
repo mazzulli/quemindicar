@@ -84,7 +84,7 @@ export default function PrestadoresPage() {
   const { user } = useAuth()
   const router = useRouter()
 
-  if (!user) {
+  if (user?.role !== 'Administrator') {
     router.push("/dashboard")
   }
 
