@@ -31,7 +31,7 @@ export default function CadastroPage() {
   const router = useRouter()
 
   if (!user) {
-    router.push("/login")
+    router.push("/dashboard")
   }
 
   const { toast } = useToast()
