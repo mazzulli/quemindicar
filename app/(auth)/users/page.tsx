@@ -24,7 +24,7 @@ const UsersPage = () => {
     const { user } = useAuth()
     const router = useRouter()
 
-    if (!user || user.role !== "Administrator") {
+    if (user?.role !== "Administrator") {
         router.push("/dashboard")        
     }
 
