@@ -130,8 +130,8 @@ export function ReviewsModal({ isOpen, id, onClose }: ReviewsModalProps) {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="w-full">
-        <DialogHeader>
+      <DialogContent className="w-4/5 max-w-2xl">
+        <DialogHeader className="w-full">
           <DialogTitle className="text-2xl font-bold text-center">Avaliações dos Clientes</DialogTitle>
         </DialogHeader>
 
@@ -150,9 +150,9 @@ export function ReviewsModal({ isOpen, id, onClose }: ReviewsModalProps) {
         ) : (
         <div className="relative">
           {/* Card da avaliação atual */}
-          <Card className="min-h-[300px]">
+          <Card className="min-h-[300px] min-w-4/5">
             <CardContent className="p-6">
-              <div className="flex flex-col items-center text-center space-y-4">
+              <div className="flex flex-col items-center text-center space-y-4 w-2/3 mx-auto">
                 <Avatar className="w-16 h-16">
                   <AvatarFallback className="bg-primary text-primary-foreground text-lg font-semibold">
                     {getInitials(reviews[currentIndex]?.reviewerName)}
