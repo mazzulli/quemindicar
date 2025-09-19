@@ -70,7 +70,7 @@ export const providerSchema = z.object({
     .string()
     .min(1, "Email é obrigatório")
     .email("Email deve ser válido")
-    .max(200, "Email deve ter no máximo 200 caracteres")
+    .max(80, "Email deve ter no máximo 80 caracteres")
     .trim(),
   address: z.string().optional().or(z.literal("")),
   website: z

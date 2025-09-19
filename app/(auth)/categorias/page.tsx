@@ -36,9 +36,9 @@ export default function CategoriasPage() {
   const { user } = useAuth()
   const router = useRouter()
 
-  if (!user) {
-    router.push("/dashboard")
-  }
+  // if (!user) {
+  //   router.push("/dashboard")
+  // }
 
   const { toast } = useToast()
   const [categories, setCategories] = useState<Category[] | undefined>([])

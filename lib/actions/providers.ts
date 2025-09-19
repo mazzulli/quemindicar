@@ -155,7 +155,7 @@ export async function createProvider(formData: FormData) {
       categoryId: Number(formData.get("categoryId")),
       description: formData.get("description") as string,
       phone: formData.get("phone") as string,
-      email: formData.get("email") as string,
+      email: formData.get("email")?.toString().trim() as string,
       address: formData.get("address") as string,
       website: formData.get("website") as string,
       instagram: formData.get("instagram") as string,
@@ -206,7 +206,6 @@ export async function createProvider(formData: FormData) {
       subtitle: validatedData.subtitle || null,
       description: validatedData.description || null,
       photoUrl,
-      email: validatedData.email,
       address: validatedData.address || null,
       website: validatedData.website || null,
       instagram: validatedData.instagram || null,
@@ -217,7 +216,10 @@ export async function createProvider(formData: FormData) {
     };
 
     const provider = await prisma.provider.create({
-      data: cleanedData,
+      data: {
+        ...cleanedData,
+        email: validatedData.email,
+      },
       include: {
         category: true,
       },
