@@ -91,9 +91,9 @@ export default function EditarPrestadorPage({ params }: { params: { id: string }
         getProviderById(Number(params.id)),
       ])
 
-      if(providerResult.data?.email !== user?.email) {
-        router.push("/prestadores")
-      }
+      // if(providerResult.data?.email !== user?.email) {
+      //   router.push("/prestadores")
+      // }
 
       if (categoriesResult.success) {
         setCategories(categoriesResult.data)

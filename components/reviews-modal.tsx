@@ -7,7 +7,6 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { ChevronLeft, ChevronRight, Star } from "lucide-react"
 import { cn } from "@/lib/utils"
-import { prisma } from "@/lib/prisma"
 import { viewRatings } from "@/lib/actions/ratings"
 import { Rating } from "@prisma/client"
 
@@ -197,7 +196,7 @@ export function ReviewsModal({ isOpen, id, onClose }: ReviewsModalProps) {
         )}
 
         {/* Indicadores de posição */}
-        <div className="flex justify-center space-x-2 mt-4">
+        <div className="flex justify-center space-x-2 mt-4 flex-wrap">
           {reviews.map((_, index) => (
             <button
               key={index}
