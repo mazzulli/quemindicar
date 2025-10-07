@@ -317,9 +317,9 @@ export default function PrestadoresPage() {
                     <Users className="w-6 h-6 text-white" />
                   </div>
                   <div>
-                    <h1 className="text-3xl font-bold text-white">Gerenciar Prestadores</h1>
+                    <h1 className="text-3xl font-bold text-white">Gerenciar Anúncios</h1>
                     <p className="text-white/80 text-sm">
-                      {filteredAndSortedProviders?.length} de {providers?.length} prestadores
+                      {filteredAndSortedProviders?.length} de {providers?.length} anúncios
                     </p>
                   </div>
                 </div>                
@@ -331,7 +331,7 @@ export default function PrestadoresPage() {
                     className="bg-green-500/20 hover:bg-green-500/30 text-white border-green-300/30 backdrop-blur-sm transition-all duration-300 hover:scale-105"
                   >
                     <Plus className="w-4 h-4 mr-2" />
-                    Novo Prestador
+                    Novo Anúncio
                   </Button>
                 </Link>
                 <Link href="/dashboard">

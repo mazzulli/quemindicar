@@ -9,7 +9,7 @@ const CheckoutReturnPage = async ({ searchParams }: { searchParams: { [key: stri
     const sessionId = searchParams.session_id
 
     if (!sessionId)
-        throw new Error('Por favor forneça uma sessão válida (`cs_test_...`)')
+        throw new Error('Por favor forneça uma sessão válida')
 
     const session = await stripe.checkout.sessions.retrieve(sessionId, {
         expand: ['line_items', 'payment_intent']
@@ -23,6 +23,7 @@ const CheckoutReturnPage = async ({ searchParams }: { searchParams: { [key: stri
         return redirect('/')
     }
 
+    // if success create a password and register the user
     if (status === 'complete') {
         const mailIndex = customerEmail.indexOf('@')
         const initialPassword = 'qi@' + customerEmail.substring(0, mailIndex) + generatePassword()
@@ -35,6 +36,7 @@ const CheckoutReturnPage = async ({ searchParams }: { searchParams: { [key: stri
             passwordHash: hashedPassword,
             role: "Customer",
             active: true,
+            stripeCustomerId: session.customer as string,
         } 
         // gravar os dados do novo usuário
         const user = await createUser(data)

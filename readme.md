@@ -752,3 +752,13 @@ O dashboard oferece uma visão completa e atrativa dos dados da plataforma, com 
 - ✅ **Crescimento** → Calculado com datas reais
 
 O dashboard agora é um **reflexo fiel** dos dados reais do sistema, atualizando automaticamente conforme novos prestadores e avaliações são adicionados! 🎯
+
+# CONFIGURAÇAO DA AUTENTICAÇÃO VIA NEXTAUTH
+
+https://next-auth.js.org/configuration/providers/credentials
+
+Instalar o Next Auth:
+`npm install next-auth`
+
+Configurar o arquivo de rotas em "/app/api/auth/[...nextauth]/route.ts".
+Configurar o provider.

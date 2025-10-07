@@ -6,6 +6,7 @@ import { providerSchema, providerUpdateSchema } from "@/lib/validations";
 
 // Add the uploadImage import at the top
 import { uploadImage, deleteImage } from "./upload";
+import { number } from "zod";
 
 export async function getProviders(filters?: {
   search?: string;
@@ -156,7 +157,13 @@ export async function createProvider(formData: FormData) {
       description: formData.get("description") as string,
       phone: formData.get("phone") as string,
       email: formData.get("email")?.toString().trim() as string,
+      zipCode: formData.get("zipCode") as string,
       address: formData.get("address") as string,
+      number: formData.get("number") as string,
+      complement: formData.get("complement") as string,
+      neighborhood: formData.get("neighborhood") as string,
+      city: formData.get("city") as string,
+      state: formData.get("state") as string,
       website: formData.get("website") as string,
       instagram: formData.get("instagram") as string,
       facebook: formData.get("facebook") as string,
@@ -206,7 +213,13 @@ export async function createProvider(formData: FormData) {
       subtitle: validatedData.subtitle || null,
       description: validatedData.description || null,
       photoUrl,
+      zipCode: validatedData.zipCode || null,
       address: validatedData.address || null,
+      number: validatedData.number || null,
+      complement: validatedData.complement || null,
+      neighborhood: validatedData.neighborhood || null,
+      city: validatedData.city || null,
+      state: validatedData.state || null,
       website: validatedData.website || null,
       instagram: validatedData.instagram || null,
       facebook: validatedData.facebook || null,
@@ -259,7 +272,13 @@ export async function updateProvider(formData: FormData) {
       description: formData.get("description") as string,
       phone: formData.get("phone") as string,
       email: formData.get("email") as string,
+      zipCode: formData.get("zipCode") as string,
       address: formData.get("address") as string,
+      number: formData.get("number") as string,
+      complement: formData.get("complement") as string,
+      neighborhood: formData.get("neighborhood") as string,
+      city: formData.get("city") as string,
+      state: formData.get("state") as string,
       website: formData.get("website") as string,
       instagram: formData.get("instagram") as string,
       facebook: formData.get("facebook") as string,
@@ -333,7 +352,13 @@ export async function updateProvider(formData: FormData) {
       photoUrl,
       phone: validatedData.phone,
       email: validatedData.email,
+      zipCode: validatedData.zipCode || null,
       address: validatedData.address || null,
+      number: validatedData.number || null,
+      complement: validatedData.complement || null,
+      neighborhood: validatedData.neighborhood || null,
+      city: validatedData.city || null,
+      state: validatedData.state || null,
       website: validatedData.website || null,
       instagram: validatedData.instagram || null,
       facebook: validatedData.facebook || null,

@@ -92,7 +92,7 @@ export function ImageUpload({ currentImage, onImageChange, disabled = false }: I
 
   return (
     <div className="space-y-4">
-      <Label className="text-sm font-semibold text-gray-700">Foto do Prestador</Label>
+      <Label className="text-sm font-semibold text-gray-700">Foto do Anúncio</Label>
 
       {/* Upload Area */}
       <div

@@ -9,14 +9,21 @@ export type UserProps = {
   name: string;
   email: string;
   passwordHash: string;
-  role: "Admin" | "Customer";
+  role: "Administrator" | "Customer";
   active: boolean;
+  stripeCustomerId?: string;
 };
 
 export async function createUser(data: UserProps) {
   try {
+    console.log("Creating user with data:", data);
     const validatedData = userSchema.parse(data);
+
+    // console.log("DEPOIS DE VALIDAR O SCHEMA");
+
     const { ...userData } = validatedData;
+
+    // console.log("VERIFICANDO SE USUÁRIO JÁ EXISTE PELO EMAIL:", userData.email);
 
     const existingUser = await prisma.user.findUnique({
       where: { email: userData.email },
@@ -29,6 +36,9 @@ export async function createUser(data: UserProps) {
       };
     }
 
+    // console.log("INICAR GRAVAÇÃO: ", userData);
+    // console.log("STRIPE CUSTOMER ID:", validatedData?.stripeCustomerId);
+
     const user = await prisma.user.create({
       data: userData,
     });
@@ -39,7 +49,7 @@ export async function createUser(data: UserProps) {
       message: "Usuário criado com sucesso",
     };
   } catch (error) {
-    console.error("Error creating USER:", error);
+    // console.error("Error creating USER:", error);
 
     if (error instanceof Error) {
       return {
@@ -58,14 +68,39 @@ export async function createUser(data: UserProps) {
 export async function updateUser(formData: FormData) {
   try {
     // Extract form data
-    const data = {
+    const data: any = {
       id: formData.get("id") as string,
       name: formData.get("name") as string,
       email: formData.get("email") as string,
       role: formData.get("role") as string,
     };
 
+    const passwordHash = formData.get("newPassword") as string;
+    const stripeCustomerId = formData.get("stripeCustomerId") as string;
+
+    // Only include passwordHash if it's provided and not empty
+    if (passwordHash && passwordHash.trim() !== "") {
+      data.passwordHash = passwordHash;
+    }
+
+    if (stripeCustomerId && stripeCustomerId.trim() !== "") {
+      data.stripeCustomerId = stripeCustomerId;
+    }
+
+    // Validate data with zod
     const validatedData = userUpdateSchema.parse(data);
+
+    //hash new password if provided
+    try {
+      if (validatedData.passwordHash !== "" && validatedData.passwordHash) {
+        const passwordHashed = await hashPassword(
+          validatedData.passwordHash as string
+        );
+        validatedData.passwordHash = passwordHashed;
+      }
+    } catch (error) {
+      console.error("Error hashing password:", error);
+    }
 
     // Check if provider exists
     const existingUser = await prisma.user.findUnique({
@@ -79,9 +114,11 @@ export async function updateUser(formData: FormData) {
       };
     }
 
+    // Update user
+    console.log("VOU ATUALIZAR OS DADOS NO BANCO:");
     const user = await prisma.user.update({
       where: { id: validatedData.id },
-      data: data,
+      data: validatedData,
     });
 
     revalidatePath("/");
