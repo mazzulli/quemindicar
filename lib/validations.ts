@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { stripe } from "./stripe";
 
 // User validations
 export const userSchema = z.object({
@@ -19,6 +20,7 @@ export const userSchema = z.object({
     }),
   }),
   active: z.boolean(),
+  stripeCustomerId: z.string().optional(),
 });
 
 export const userUpdateSchema = z.object({
@@ -33,6 +35,7 @@ export const userUpdateSchema = z.object({
   role: z.enum(["Administrator", "Customer"], {
     errorMap: () => ({ message: "Role deve ser 'Admin' ou 'Customer'" }),
   }),
+  stripeCustomerId: z.string().optional(),
 });
 
 // Category validations

@@ -11,6 +11,7 @@ export type UserProps = {
   passwordHash: string;
   role: "Administrator" | "Customer";
   active: boolean;
+  stripeCustomerId?: string;
 };
 
 export async function createUser(data: UserProps) {
@@ -18,11 +19,12 @@ export async function createUser(data: UserProps) {
     console.log("Creating user with data:", data);
     const validatedData = userSchema.parse(data);
 
-    console.log("DEPOIS DE VALIDAR O SCHEMA");
+    // console.log("DEPOIS DE VALIDAR O SCHEMA");
 
     const { ...userData } = validatedData;
 
-    console.log("VERIFICANDO SE USUÁRIO JÁ EXISTE PELO EMAIL:", userData.email);
+    // console.log("VERIFICANDO SE USUÁRIO JÁ EXISTE PELO EMAIL:", userData.email);
+
     const existingUser = await prisma.user.findUnique({
       where: { email: userData.email },
     });
@@ -34,7 +36,9 @@ export async function createUser(data: UserProps) {
       };
     }
 
-    console.log("INICAR GRAVAÇÃO: ", userData);
+    // console.log("INICAR GRAVAÇÃO: ", userData);
+    // console.log("STRIPE CUSTOMER ID:", validatedData?.stripeCustomerId);
+
     const user = await prisma.user.create({
       data: userData,
     });
@@ -45,7 +49,7 @@ export async function createUser(data: UserProps) {
       message: "Usuário criado com sucesso",
     };
   } catch (error) {
-    console.error("Error creating USER:", error);
+    // console.error("Error creating USER:", error);
 
     if (error instanceof Error) {
       return {
@@ -72,10 +76,15 @@ export async function updateUser(formData: FormData) {
     };
 
     const passwordHash = formData.get("newPassword") as string;
+    const stripeCustomerId = formData.get("stripeCustomerId") as string;
 
     // Only include passwordHash if it's provided and not empty
     if (passwordHash && passwordHash.trim() !== "") {
       data.passwordHash = passwordHash;
+    }
+
+    if (stripeCustomerId && stripeCustomerId.trim() !== "") {
+      data.stripeCustomerId = stripeCustomerId;
     }
 
     // Validate data with zod
@@ -83,7 +92,7 @@ export async function updateUser(formData: FormData) {
 
     //hash new password if provided
     try {
-      if (validatedData.passwordHash !== "") {
+      if (validatedData.passwordHash !== "" && validatedData.passwordHash) {
         const passwordHashed = await hashPassword(
           validatedData.passwordHash as string
         );
@@ -106,6 +115,7 @@ export async function updateUser(formData: FormData) {
     }
 
     // Update user
+    console.log("VOU ATUALIZAR OS DADOS NO BANCO:");
     const user = await prisma.user.update({
       where: { id: validatedData.id },
       data: validatedData,

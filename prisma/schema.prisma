@@ -11,16 +11,16 @@ datasource db {
 }
 
 model User {
-  id           String    @id @default(uuid())
-  name         String    @db.VarChar(200)
-  email        String    @unique @db.VarChar(200)
-  passwordHash String    @db.VarChar(255)
-  role         String    @default("Customer") @db.VarChar(50)
-  active       Boolean   @default(true)
-  stripeId     String?   @db.VarChar(255)
-  lastLogin    DateTime?
-  createdAt    DateTime  @default(now()) @map("created_at")
-  updatedAt    DateTime  @updatedAt @map("updated_at")
+  id               String    @id @default(uuid())
+  name             String    @db.VarChar(200)
+  email            String    @unique @db.VarChar(200)
+  passwordHash     String    @db.VarChar(255)
+  role             String    @default("Customer") @db.VarChar(50)
+  active           Boolean   @default(true)
+  stripeCustomerId String?   @db.VarChar(255)
+  lastLogin        DateTime?
+  createdAt        DateTime  @default(now()) @map("created_at")
+  updatedAt        DateTime  @updatedAt @map("updated_at")
 
   sessions Session[]
 
