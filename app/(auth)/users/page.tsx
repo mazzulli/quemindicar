@@ -7,7 +7,7 @@ import { useAuth } from "@/contexts/auth-context"
 import { useState } from "react"
 import Link from "next/link"
 import { User } from "@prisma/client"
-import { deleteUser, getUsers, toggleUserStatus } from "@/lib/actions/users"
+import { createUser, deleteUser, getUserById, getUsers, toggleUserStatus, UserProps } from "@/lib/actions/users"
 import { ArrowLeft, Edit, Eye, EyeOff, Filter, Hash, Plus, Search, Trash2, Users  } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -19,6 +19,25 @@ import { AlertDialogHeader, AlertDialogFooter } from "@/components/ui/alert-dial
 import { AlertDialog, AlertDialogTrigger, AlertDialogContent, AlertDialogTitle, AlertDialogDescription, AlertDialogCancel, AlertDialogAction } from "@/components/ui/alert-dialog"
 import PasswordRessend from "./components/password-ressend"
 import { useRouter } from "next/navigation"
+import { Sheet, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
+import z from "zod"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm } from "react-hook-form"
+import { generatePassword, hashPassword } from "@/lib/utils"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+
+// Defina o esquema do formulário com Zod
+const FormSchema = z.object({
+    name: z.string().min(2, {
+        message: "O nome de usuário deve ter pelo menos 2 caracteres.",
+    }),
+    email: z.string().email({
+        message: "Insira um email válido.",
+    }),
+    role: z.string()    
+})
+
 
 const UsersPage = () => {
     const { user } = useAuth()
@@ -34,21 +53,30 @@ const UsersPage = () => {
     const [submitting, setSubmitting] = useState(false)
     const [searchTerm, setSearchTerm] = useState("")  
 
+    //Inicialize o useForm
+    const form = useForm<z.infer<typeof FormSchema>>({
+        resolver: zodResolver(FormSchema),
+        defaultValues: {
+        name: "",
+        email: "",
+        },
+    })
+
     useEffect(() => {
         loadData()
     }, [user?.email])
 
     const loadData = async () => {
         try {
-            const usersResult =  await getUsers()
+            const usersResult = user?.role === "Administrator" ? await getUsers() : await getUserById(user?.id as string)
             
             if (usersResult.success) {
-                setUsers(usersResult.data)
+                setUsers(usersResult.data as User[])
             }
         } catch (error) {
             toast({
             title: "Erro",
-            description: "Erro ao carregar dados",
+            description: "Erro ao carregar dados do usuário",
             variant: "destructive",
             })
         } finally {
@@ -149,6 +177,44 @@ const UsersPage = () => {
         }
     }
 
+    const handleSubmit = async (data: z.infer<typeof FormSchema>)=> {
+        console.log("Dados do formulário:", data)
+        
+        setSubmitting(true)
+
+        const mailIndex = data.email.indexOf('@')
+        const initialPassword = 'qi@' + data.email.substring(0, mailIndex) + generatePassword()
+
+        const hashedPassword = await hashPassword(initialPassword)
+
+        const dataFormated: UserProps = {
+            name: data.name,
+            email: data.email,
+            passwordHash: hashedPassword,
+            role: data.role as "Administrator" | "Customer",
+            active: true,
+        } 
+
+        console.log("Dados formatados:", dataFormated)
+
+        const user = await createUser(dataFormated)
+
+        if (user) {
+            toast({
+                title: "Sucesso!",
+                description: "Usuário criado com sucesso!",
+            })
+            form.reset()
+            await loadData()
+        } else {
+            toast({
+                title: "Erro",
+                description: "Erro ao criar usuário",
+                variant: "destructive",
+            })
+        }
+
+    }
 
     if (loading) {
         return (
@@ -180,25 +246,96 @@ const UsersPage = () => {
                     </div>
                 </div>                
                 </div>
-                <div className="flex items-center justify-end gap-4">
-                <Link href="/newuser">
-                    <Button
-                    variant="secondary"
-                    className="bg-green-500/20 hover:bg-green-500/30 text-white border-green-300/30 backdrop-blur-sm transition-all duration-300 hover:scale-105"
-                    >
-                        <Plus className="w-4 h-4 mr-2" />
-                        Novo Usuário
-                    </Button>
-                </Link>
-                <Link href="/dashboard">
-                    <Button
-                    variant="secondary"
-                    className="bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur-sm transition-all duration-300 hover:scale-105"
-                    >
-                    <ArrowLeft className="w-4 h-4 mr-2" />
-                    Voltar
-                    </Button>
-                </Link>
+                <div className="flex items-center justify-end gap-4">                    
+                    <Sheet>
+                        <SheetTrigger asChild>
+                            <Button
+                            variant="secondary"
+                            className="bg-green-500/20 hover:bg-green-500/30 text-white border-green-300/30 backdrop-blur-sm transition-all duration-300 hover:scale-105"
+                            >
+                                <Plus className="w-4 h-4 mr-2" />
+                                Novo Usuário
+                            </Button>
+                        </SheetTrigger>
+                        <SheetContent>
+                            <SheetHeader className="mb-6">
+                                <SheetTitle>Novo Usuário</SheetTitle>
+                                <SheetDescription>
+                                    Informe os dados abaixo para cadastro e liberação do acesso.
+                                </SheetDescription>
+                            </SheetHeader>
+                            <Form {...form}>
+                                <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">   
+                                    <FormField
+                                        control={form.control}
+                                        name="name"
+                                        render={({field}) => (
+                                        <FormItem>
+                                            <FormLabel>Nome</FormLabel>
+                                            <FormControl>
+                                                <Input placeholder="Nome completo" {...field} />
+                                            </FormControl>
+                                            <FormDescription />
+                                            <FormMessage />
+                                        </FormItem>
+                                        )}
+                                    />
+                                    <FormField
+                                        control={form.control}
+                                        name="email"
+                                        render={({field}) => (
+                                        <FormItem>
+                                            <FormLabel>E-mail</FormLabel>
+                                            <FormControl>
+                                                <Input placeholder="email@email.com" {...field} />
+                                            </FormControl>
+                                            <FormDescription />
+                                            <FormMessage />
+                                        </FormItem>
+                                        )}
+                                    />
+
+                                    <FormField
+                                        control={form.control}
+                                        name="role"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                            <FormLabel>Tipo de Acesso</FormLabel>
+                                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                <FormControl>
+                                                    <SelectTrigger>
+                                                        <SelectValue placeholder="Selecione uma regra" />
+                                                    </SelectTrigger>
+                                                </FormControl>
+                                                <SelectContent>
+                                                    <SelectItem value="Administrator">Administrador</SelectItem>
+                                                    <SelectItem value="Customer">Cliente</SelectItem>                                                
+                                                </SelectContent>
+                                            </Select>
+                                            <FormDescription />                                            
+                                            <FormMessage />
+                                            </FormItem>
+                                        )}
+                                        />
+                                    <div className="flex gap-4 justify-end">
+                                        <Button type="submit">Salvar</Button>
+                                        <SheetClose asChild>
+                                            <Button variant="destructive">Cancelar</Button>                                        
+                                        </SheetClose>
+                                    </div>
+                                </form>                                    
+                            </Form>                                                    
+                        </SheetContent>
+                    </Sheet>                                         
+                    <Link href="/dashboard">
+                        <Button
+                        variant="secondary"
+                        className="bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur-sm transition-all duration-300 hover:scale-105"
+                        >
+                        <ArrowLeft className="w-4 h-4 mr-2" />
+                        Voltar
+                        </Button>
+                    </Link>
                 </div>
             </div>
             </div>
@@ -361,3 +498,4 @@ const UsersPage = () => {
 }
  
 export default UsersPage;
+

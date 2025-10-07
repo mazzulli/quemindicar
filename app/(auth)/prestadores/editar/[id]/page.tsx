@@ -18,6 +18,7 @@ import { useAuth } from "@/contexts/auth-context"
 import { getCategories } from "@/lib/actions/categories"
 import { getProviderById, updateProvider } from "@/lib/actions/providers"
 import { ImageUpload } from "@/components/image-upload"
+import { number } from "zod"
 
 interface Category {
   id: number
@@ -39,7 +40,13 @@ interface Provider {
   photoUrl: string | null
   phone: string
   email: string
+  zipCode: string | null
   address: string | null
+  number: string | null
+  complement: string | null
+  neighborhood: string | null
+  city: string | null
+  state: string | null
   website: string | null
   instagram: string | null
   facebook: string | null
@@ -71,7 +78,13 @@ export default function EditarPrestadorPage({ params }: { params: { id: string }
     description: "",
     phone: "",
     email: "",
+    zipCode: "",
     address: "",
+    number: "",
+    complement: "",
+    neighborhood: "",
+    city: "",
+    state: "",
     website: "",
     instagram: "",
     facebook: "",
@@ -119,7 +132,13 @@ export default function EditarPrestadorPage({ params }: { params: { id: string }
           description: providerData.description || "",
           phone: providerData.phone,
           email: providerData.email,
+          zipCode: providerData.zipCode || "",
           address: providerData.address || "",
+          number: providerData.number || "",
+          complement: providerData.complement || "",
+          neighborhood: providerData.neighborhood || "",
+          city: providerData.city || "",
+          state: providerData.state || "",
           website: providerData.website || "",
           instagram: providerData.instagram || "",
           facebook: providerData.facebook || "",
@@ -403,15 +422,77 @@ export default function EditarPrestadorPage({ params }: { params: { id: string }
                   </div>
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="endereco">Endereço</Label>
+                <div className="space-y-2 w-full sm:w-1/5">                  
+                  <Label htmlFor="zipCode">Cep</Label>
                   <Input
-                    id="endereco"
-                    value={formData.address}
-                    onChange={(e) => handleInputChange("address", e.target.value)}
-                    placeholder="Rua, número, bairro, cidade, estado"
+                    id="zipCode"
+                    value={formData.zipCode}
+                    onChange={(e) => handleInputChange("zipCode", e.target.value)}
+                    placeholder="00000-000"                    
+                  />
+                </div>
+
+                <div className="flex gap-4 w-full flex-col sm:flex-row">
+                  <div className="space-y-2 w-full">
+                    <Label htmlFor="endereco">Endereço</Label>
+                    <Input
+                      id="endereco"
+                      value={formData.address}
+                      onChange={(e) => handleInputChange("address", e.target.value)}
+                      
+                    />
+                  </div>
+                  <div className="space-y-2 w-[120px]">
+                    <Label htmlFor="number">Número</Label>
+                    <Input
+                      id="number"
+                      value={formData.number}
+                      onChange={(e) => handleInputChange("number", e.target.value)}                      
+                      disabled={submitting}
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="complement">Complemento</Label>
+                  <Input
+                    id="complement"
+                    value={formData.complement}
+                    onChange={(e) => handleInputChange("complement", e.target.value)}                    
                     disabled={submitting}
                   />
+                </div>
+
+                <div className="flex gap-4 w-full flex-col sm:flex-row justify-stretch">
+                  <div className="space-y-2 flex-1" >
+                    <Label htmlFor="neighborhood">Bairro</Label>
+                    <Input
+                      id="neighborhood"
+                      value={formData.neighborhood}
+                      onChange={(e) => handleInputChange("neighborhood", e.target.value)}                      
+                      disabled={submitting}
+                    />
+                  </div>
+
+                  <div className="space-y-2 flex-1">
+                    <Label htmlFor="city">Cidade</Label>
+                    <Input
+                      id="city"
+                      value={formData.city}
+                      onChange={(e) => handleInputChange("city", e.target.value)}
+                      disabled={submitting}
+                    />
+                  </div>
+
+                  <div className="space-y-2 sm:w-[80px] w-full">
+                    <Label htmlFor="state">Estado</Label>
+                    <Input
+                      id="state"
+                      value={formData.state}
+                      onChange={(e) => handleInputChange("state", e.target.value)}
+                      disabled={submitting}
+                    />
+                  </div>
                 </div>
 
                 <div className="space-y-2">

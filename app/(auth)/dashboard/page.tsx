@@ -25,6 +25,8 @@ import Image from "next/image"
 import { ProtectedRoute } from "@/components/protected-route"
 import { useAuth } from "@/contexts/auth-context"
 import { getDashboardStats, getCategoriesStats, getTopProviders, getMonthlyGrowth } from "@/lib/actions/dashboard"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { getInitialsName } from "@/lib/utils"
 
 interface DashboardStats {
   totalProviders: number
@@ -185,10 +187,18 @@ export default function DashboardPage() {
                   <p className="text-white/80 text-sm">Visão geral dos prestadores de serviços</p>
                 </div>
               </div>
-              <div className="flex flex-col sm:flex-row md:flex-col items-center gap-3">
-                <div className="text-white/90 text-sm mb-8">
-                  <p className="font-medium">Olá, {user?.name}</p>
-                  <p className="text-white/70 text-xs">{user?.email}</p>                  
+              <div className="flex flex-col sm:flex-row md:flex-col items-end gap-3">
+                <div className="flex justify-center gap-4">
+                  <Link href={`/users/edit/${user?.id}`} className="hover:text-pink-600 transition">
+                    <Avatar>
+                      <AvatarImage src="" alt="foto usuário" />
+                      <AvatarFallback>{getInitialsName(user?.name as string)}</AvatarFallback>
+                    </Avatar>
+                  </Link>
+                  <div className="text-white/90 text-sm mb-8">                
+                    <p className="font-medium">Olá, {user?.name}</p>
+                    <p className="text-white/70 text-xs">{user?.email}</p>                  
+                  </div>
                 </div>
                 <div className="flex sm:flex-row flex-wrap gap-3">
                   {user?.role === "Administrator" && (                    

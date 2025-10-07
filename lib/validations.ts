@@ -2,7 +2,7 @@ import { z } from "zod";
 
 // User validations
 export const userSchema = z.object({
-  id: z.string(),
+  id: z.string().optional(),
   name: z
     .string()
     .min(2, "Nome é obrigatório")
@@ -11,10 +11,12 @@ export const userSchema = z.object({
   email: z.string().email(),
   passwordHash: z
     .string()
-    .min(6, "Senha deve ter no mínimo 6 caracteres")
-    .max(10, "Senha deve ter no máximo 10 caracteres"),
+    .min(8, "Senha deve ter no mínimo 8 caracteres")
+    .max(255),
   role: z.enum(["Administrator", "Customer"], {
-    errorMap: () => ({ message: "Role deve ser 'Admin' ou 'Customer'" }),
+    errorMap: () => ({
+      message: "Tipo de acesso deve ser 'Administrador' ou 'Cliente'",
+    }),
   }),
   active: z.boolean(),
 });
@@ -27,6 +29,7 @@ export const userUpdateSchema = z.object({
     .max(80, "Nome deve ter no máximo 80 caracteres")
     .trim(),
   email: z.string().email(),
+  passwordHash: z.string().min(8).max(16).optional(),
   role: z.enum(["Administrator", "Customer"], {
     errorMap: () => ({ message: "Role deve ser 'Admin' ou 'Customer'" }),
   }),
@@ -72,7 +75,37 @@ export const providerSchema = z.object({
     .email("Email deve ser válido")
     .max(80, "Email deve ter no máximo 80 caracteres")
     .trim(),
+  zipCode: z
+    .string()
+    .max(9, "CEP deve ter no máximo 9 caracteres")
+    .optional()
+    .or(z.literal("")),
   address: z.string().optional().or(z.literal("")),
+  number: z
+    .string()
+    .max(10, "Número deve ter no máximo 10 caracteres")
+    .optional()
+    .or(z.literal("")),
+  complement: z
+    .string()
+    .max(50, "Complemento deve ter no máximo 50 caracteres")
+    .optional()
+    .or(z.literal("")),
+  neighborhood: z
+    .string()
+    .max(50, "Bairro deve ter no máximo 50 caracteres")
+    .optional()
+    .or(z.literal("")),
+  city: z
+    .string()
+    .max(50, "Cidade deve ter no máximo 50 caracteres")
+    .optional()
+    .or(z.literal("")),
+  state: z
+    .string()
+    .max(2, "Estado deve ter no máximo 2 caracteres")
+    .optional()
+    .or(z.literal("")),
   website: z
     .string()
     .url("Website deve ser uma URL válida")

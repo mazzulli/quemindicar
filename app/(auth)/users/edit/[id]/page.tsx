@@ -22,11 +22,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { Separator } from "@radix-ui/react-select"
 
 interface User {
   id: string
   name: string  
   email: string
+  role?: string
+  newPassword?: string
+  confirmPassword?: string
 }
 
 export default function CustomerEditPage({ params }: { params: { id: string } }) {
@@ -47,6 +51,8 @@ export default function CustomerEditPage({ params }: { params: { id: string } })
     name: "",
     email: "",
     role: "",
+    newPassword: "",
+    confirmPassword: "",
   })
 
 
@@ -57,7 +63,6 @@ export default function CustomerEditPage({ params }: { params: { id: string } })
   const loadData = async () => {
     try {
       const userResult = await getUserById(params.id)
-
 
       if (userResult.success) {        
         const customerData = userResult.data
@@ -76,6 +81,8 @@ export default function CustomerEditPage({ params }: { params: { id: string } })
           name: customerData?.name || "",
           email: customerData?.email || "",
           role: customerData?.role || "",
+          newPassword: "",
+          confirmPassword: "",
         })
       } else {
         toast({
@@ -107,20 +114,44 @@ export default function CustomerEditPage({ params }: { params: { id: string } })
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setSubmitting(true)
+
     try {
       // Create FormData for server action
       const submitFormData = new FormData()
-
-      // Add user ID
-      submitFormData.append("id", params.id)
-
+      
       // Add all form fields
       Object.entries(formData).forEach(([key, value]) => {
           submitFormData.append(key, value)
       })
 
-      console.log("Form Data to submit:", Array.from(submitFormData.entries()))
+      // Add user ID
+      submitFormData.append("id", params.id)
+
+      console.log("Submitting FormData:", Array.from(submitFormData.entries()))
+
+      const newPassword = submitFormData.get("newPassword") as string
+      const confirmPassword = submitFormData.get("confirmPassword") as string
       
+      if (newPassword !== confirmPassword) {
+        toast({
+          title: "Erro",
+          description: "As senhas não coincidem",
+          variant: "destructive",
+        })
+        setSubmitting(false)
+        return
+      }
+
+      if (newPassword !== "" && newPassword.length < 8) {
+        toast({
+          title: "Erro",
+          description: "A nova senha deve ter pelo menos 8 caracteres",
+          variant: "destructive",
+        })
+        setSubmitting(false)
+        return
+      }
+
       const result = await updateUser(submitFormData)
 
       if (result.success) {
@@ -128,7 +159,7 @@ export default function CustomerEditPage({ params }: { params: { id: string } })
           title: "Sucesso!",
           description: result.message,
         })
-        router.push("/users")
+        router.push(user?.role==='Administrator' ? "/users" : "/dashboard")
       } else {
         toast({
           title: "Erro",
@@ -180,7 +211,7 @@ export default function CustomerEditPage({ params }: { params: { id: string } })
                   <p className="text-white/80 text-sm">Atualize as informações de {customer?.name}</p>
                 </div>
               </div>
-              <Link href="/users">
+              <Link href={user?.role==='Administrator' ? "/users" : "/dashboard"}>
                 <Button
                   variant="secondary"
                   className="bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur-sm transition-all duration-300 hover:scale-105"
@@ -203,7 +234,7 @@ export default function CustomerEditPage({ params }: { params: { id: string } })
               <CardContent className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="name">Nome*</Label>
+                    <Label htmlFor="name">Nome<strong className="text-red-500"> *</strong></Label>
                     <Input
                       id="name"
                       value={formData.name}
@@ -222,13 +253,13 @@ export default function CustomerEditPage({ params }: { params: { id: string } })
                       onChange={(e) => handleInputChange("email", e.target.value)}
                       placeholder="exemplo@email.com"
                       required
-                      disabled={submitting}
+                      disabled={user?.role==='Administrator' ? false : true}
                     />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="role">Tipo de Acesso*</Label>
-                    <Select onValueChange={(value) => handleInputChange("role", value)} defaultValue={formData.role} >
-                      <SelectTrigger className="w-[180px]">
+                    <Select onValueChange={(value) => handleInputChange("role", value)} defaultValue={formData.role} disabled={user?.role==='Administrator' ? false : true}>
+                      <SelectTrigger className="w-full">
                         <SelectValue placeholder="Selecionar..." />
                       </SelectTrigger>
                       <SelectContent id="role">
@@ -238,6 +269,35 @@ export default function CustomerEditPage({ params }: { params: { id: string } })
                         </SelectGroup>
                       </SelectContent>
                     </Select>
+                  </div>                  
+                  
+                  <Separator className="my-4 md:col-span-3" />
+
+                  <div className="space-y-2">
+                    <Label htmlFor="newPassword">Nova Senha</Label>
+                    <Input
+                      id="newPassword"
+                      name="newPassword"
+                      type="password"
+                      onChange={(e) => handleInputChange("newPassword", e.target.value)}
+                      disabled={submitting}
+                      placeholder="Digite sua nova senha"
+                      minLength={8}
+                    />
+                    <p className="text-sm text-muted-foreground">Mínimo de 8 caracteres</p>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="confirmPassword">Confirmar Nova Senha</Label>
+                    <Input
+                      id="confirmPassword"
+                      name="confirmPassword"
+                      type="password"
+                      onChange={(e) => handleInputChange("confirmPassword", e.target.value)}                      
+                      disabled={submitting}
+                      placeholder="Confirme sua nova senha"
+                      minLength={8}
+                    />
                   </div>
                 </div>                
               </CardContent>
@@ -245,7 +305,7 @@ export default function CustomerEditPage({ params }: { params: { id: string } })
 
             {/* Botões de Ação */}
             <div className="flex justify-end gap-4">
-              <Link href="/users">
+              <Link href={user?.role==='Administrator' ? "/users" : "/dashboard"}>
                 <Button
                   variant="outline"
                   className="border-2 border-gray-300 hover:border-indigo-500 transition-all duration-300 bg-transparent"

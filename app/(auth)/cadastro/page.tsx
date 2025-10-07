@@ -17,6 +17,7 @@ import { createProvider } from "@/lib/actions/providers"
 import { ImageUpload } from "@/components/image-upload"
 import { useAuth } from "@/contexts/auth-context"
 import { useRouter } from "next/navigation"
+import { number } from "zod"
 
 interface Category {
   id: number
@@ -47,7 +48,13 @@ export default function CadastroPage() {
     description: "",
     phone: "",
     email: user?.email || "sememail@email.com.br",
+    zipCode: "",
     address: "",
+    number: "",
+    complement: "",
+    neighborhood: "",
+    city: "",
+    state: "",
     website: "",
     instagram: "",
     facebook: "",
@@ -146,7 +153,13 @@ export default function CadastroPage() {
           description: "",
           phone: "",
           email: user?.email || "sememail@email.com.br",
+          zipCode: "",
           address: "",
+          number: "",
+          complement: "",
+          neighborhood: "",
+          city: "",
+          state: "",          
           website: "",
           instagram: "",
           facebook: "",
@@ -199,8 +212,8 @@ export default function CadastroPage() {
                   <Plus className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h1 className="text-3xl font-bold text-white">Cadastro de Prestador</h1>
-                  <p className="text-white/80 text-sm">Adicione um novo profissional à plataforma</p>
+                  <h1 className="text-3xl font-bold text-white">Cadastro de Anúncio</h1>
+                  <p className="text-white/80 text-sm">Adicione um novo anúncio à plataforma</p>
                 </div>
               </div>              
               <Link href={"/prestadores"}>
@@ -321,15 +334,76 @@ export default function CadastroPage() {
                   </div>
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="endereco">Endereço</Label>
+                <div className="space-y-2 w-full sm:w-1/5">                  
+                  <Label htmlFor="zipCode">Cep</Label>
                   <Input
-                    id="endereco"
-                    value={formData.address}
-                    onChange={(e) => handleInputChange("address", e.target.value)}
-                    placeholder="Rua, número, bairro, cidade, estado"
+                    id="zipCode"
+                    value={formData.zipCode}
+                    onChange={(e) => handleInputChange("zipCode", e.target.value)}
+                    placeholder="00000-000"                    
+                  />
+                </div>
+                <div className="flex gap-4 w-full flex-col sm:flex-row">
+                  <div className="space-y-2 w-full">
+                    <Label htmlFor="endereco">Endereço</Label>
+                    <Input
+                      id="endereco"
+                      value={formData.address}
+                      onChange={(e) => handleInputChange("address", e.target.value)}
+                      
+                    />
+                  </div>
+                  <div className="space-y-2 w-[120px]">
+                    <Label htmlFor="number">Número</Label>
+                    <Input
+                      id="number"
+                      value={formData.number}
+                      onChange={(e) => handleInputChange("number", e.target.value)}                      
+                      disabled={submitting}
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="complement">Complemento</Label>
+                  <Input
+                    id="complement"
+                    value={formData.complement}
+                    onChange={(e) => handleInputChange("complement", e.target.value)}                    
                     disabled={submitting}
                   />
+                </div>
+
+                <div className="flex gap-4 w-full flex-col sm:flex-row justify-stretch">
+                  <div className="space-y-2 flex-1" >
+                    <Label htmlFor="neighborhood">Bairro</Label>
+                    <Input
+                      id="neighborhood"
+                      value={formData.neighborhood}
+                      onChange={(e) => handleInputChange("neighborhood", e.target.value)}                      
+                      disabled={submitting}
+                    />
+                  </div>
+
+                  <div className="space-y-2 flex-1">
+                    <Label htmlFor="city">Cidade</Label>
+                    <Input
+                      id="city"
+                      value={formData.city}
+                      onChange={(e) => handleInputChange("city", e.target.value)}
+                      disabled={submitting}
+                    />
+                  </div>
+
+                  <div className="space-y-2 sm:w-[80px] w-full">
+                    <Label htmlFor="state">Estado</Label>
+                    <Input
+                      id="state"
+                      value={formData.state}
+                      onChange={(e) => handleInputChange("state", e.target.value)}
+                      disabled={submitting}
+                    />
+                  </div>
                 </div>
 
                 <div className="space-y-2">
@@ -431,7 +505,7 @@ export default function CadastroPage() {
                 ) : (
                   <>
                     <Save className="w-4 h-4 mr-2" />
-                    Salvar Prestador
+                    Salvar Anúncio
                   </>
                 )}
               </Button>
