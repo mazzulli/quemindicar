@@ -1,9 +1,8 @@
 "use client"
 
 import type React from "react"
-
 import { useState, useEffect } from "react"
-import { ArrowLeft, Save } from "lucide-react"
+import { ArrowLeft, CreditCardIcon, Save } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -22,25 +21,21 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { Separator } from "@radix-ui/react-select"
+import getCustomerLink from "@/app/(auth)/subscriptions/_data-access/get-customer-link"
 
 interface User {
   id: string
   name: string  
   email: string
   role?: string
-  newPassword?: string
-  confirmPassword?: string
+  newPassword?: string  
+  confirmPassword?: string  
+  stripeCustomerId?: string | null
 }
 
 export default function CustomerEditPage({ params }: { params: { id: string } }) {
   const { user } = useAuth()
   const router = useRouter()
-
-  // if(user?.role !== "Administrator") {
-  //   router.push("/dashboard")
-  // }
-  
   const { toast } = useToast()
   
   const [customer, setCustomer] = useState<User | undefined>(undefined)
@@ -52,7 +47,7 @@ export default function CustomerEditPage({ params }: { params: { id: string } })
     email: "",
     role: "",
     newPassword: "",
-    confirmPassword: "",
+    confirmPassword: "",    
   })
 
 
@@ -178,6 +173,12 @@ export default function CustomerEditPage({ params }: { params: { id: string } })
     }
   }
 
+  const handleGenerateCustomerLink = async (customerId: string) => {
+    const url = await getCustomerLink(customerId as string)
+    console.log("Generated Customer Link URL:", url)
+    window.open(url, '_blank')
+  }
+
   if (loading) {
     return (
       <ProtectedRoute>
@@ -271,10 +272,8 @@ export default function CustomerEditPage({ params }: { params: { id: string } })
                     </Select>
                   </div>                  
                   
-                  <Separator className="my-4 md:col-span-3" />
-
                   <div className="space-y-2">
-                    <Label htmlFor="newPassword">Nova Senha</Label>
+                    <Label htmlFor="newPassword">Nova Senha <span className="text-[10px]">(Mínimo de 8 caracteres)</span></Label>
                     <Input
                       id="newPassword"
                       name="newPassword"
@@ -283,8 +282,7 @@ export default function CustomerEditPage({ params }: { params: { id: string } })
                       disabled={submitting}
                       placeholder="Digite sua nova senha"
                       minLength={8}
-                    />
-                    <p className="text-sm text-muted-foreground">Mínimo de 8 caracteres</p>
+                    />                    
                   </div>
 
                   <div className="space-y-2">
@@ -304,33 +302,41 @@ export default function CustomerEditPage({ params }: { params: { id: string } })
             </Card>
 
             {/* Botões de Ação */}
-            <div className="flex justify-end gap-4">
-              <Link href={user?.role==='Administrator' ? "/users" : "/dashboard"}>
+            <div className="sm:flex flex-1 justify-center gap-4 space-y-4 sm:space-y-0">              
+              <Button className="flex sm:w-[200px] w-full" variant="default" title="Gerenciar Assinatura" 
+                type="button"
+                onClick={() => handleGenerateCustomerLink(customer?.stripeCustomerId as string)}>
+                <CreditCardIcon className="w-4 h-4" />
+                Gerenciar Assinatura
+              </Button>
+              <div className="flex gap-4 sm:justify-end justify-center flex-1 ">
+                <Link href={user?.role==='Administrator' ? "/users" : "/dashboard"}>
+                  <Button
+                    variant="outline"
+                    className="border-2 border-gray-300 hover:border-indigo-500 transition-all duration-300 bg-transparent"
+                    disabled={submitting}
+                  >
+                    Cancelar
+                  </Button>
+                </Link>
                 <Button
-                  variant="outline"
-                  className="border-2 border-gray-300 hover:border-indigo-500 transition-all duration-300 bg-transparent"
+                  type="submit"
+                  className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white transition-all duration-300 hover:scale-105 shadow-lg disabled:opacity-50"
                   disabled={submitting}
                 >
-                  Cancelar
+                  {submitting ? (
+                    <div className="flex items-center">
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
+                      Salvando...
+                    </div>
+                  ) : (
+                    <div className="flex items-center">
+                      <Save className="w-4 h-4 mr-2" />
+                      Salvar Alterações
+                    </div>
+                  )}
                 </Button>
-              </Link>
-              <Button
-                type="submit"
-                className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white transition-all duration-300 hover:scale-105 shadow-lg disabled:opacity-50"
-                disabled={submitting}
-              >
-                {submitting ? (
-                  <div className="flex items-center">
-                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
-                    Salvando...
-                  </div>
-                ) : (
-                  <div className="flex items-center">
-                    <Save className="w-4 h-4 mr-2" />
-                    Salvar Alterações
-                  </div>
-                )}
-              </Button>
+              </div>
             </div>
           </form>
         </main>
