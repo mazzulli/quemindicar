@@ -8,7 +8,7 @@ import { useState } from "react"
 import Link from "next/link"
 import { User } from "@prisma/client"
 import { createUser, deleteUser, getUserById, getUsers, toggleUserStatus, UserProps } from "@/lib/actions/users"
-import { ArrowLeft, Edit, Eye, EyeOff, Filter, Hash, Plus, Search, Trash2, Users  } from "lucide-react"
+import { ArrowLeft, CreditCardIcon, Edit, Eye, EyeOff, Filter, Hash, Plus, Search, Trash2, Users  } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -26,6 +26,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { generatePassword, hashPassword } from "@/lib/utils"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import getCustomerLink from "../subscriptions/_data-access/get-customer-link"
 
 // Defina o esquema do formulário com Zod
 const FormSchema = z.object({
@@ -64,11 +65,16 @@ const UsersPage = () => {
 
     useEffect(() => {
         loadData()
-    }, [user?.email])
+    }, [user?.email, user?.id]) // Recarrega quando o email, name ou role do usuário mudar
 
     const loadData = async () => {
+        if(!user?.role)return
         try {
-            const usersResult = user?.role === "Administrator" ? await getUsers() : await getUserById(user?.id as string)
+            console.log("USER ROLE: ", user?.role)
+            const usersResult = 
+            user?.role === "Administrator"  
+            ? await getUsers() 
+            : await getUserById(user?.id as string)
             
             if (usersResult.success) {
                 setUsers(usersResult.data as User[])
@@ -214,6 +220,13 @@ const UsersPage = () => {
             })
         }
 
+    }
+
+    const handleGenerateCustomerLink = async (customerId: string) => {
+        const url = await getCustomerLink(customerId)
+        console.log("Generated Customer Link URL:", url)
+        // redirecionar para a URL
+        window.open(url, '_blank')
     }
 
     if (loading) {
@@ -419,7 +432,10 @@ const UsersPage = () => {
                                                 <Edit className="w-4 h-4" />
                                             </Button>
                                         </Link>
-                                    
+                                        <Button size="sm" variant="outline" title="Gerenciar Assinatura" 
+                                        onClick={() => handleGenerateCustomerLink(user.stripeCustomerId as string)}>
+                                            <CreditCardIcon className="w-4 h-4" />
+                                        </Button>
                                         <AlertDialog>
                                             <AlertDialogTrigger asChild>
                                                 <Button size="sm" variant="outline" disabled={submitting} title="Excluir">
