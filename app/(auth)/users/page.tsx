@@ -436,13 +436,6 @@ const UsersPage = () => {
                                         onClick={() => handleGenerateCustomerLink(user.stripeCustomerId as string)}>
                                             <CreditCardIcon className="w-4 h-4" />
                                         </Button>
-                                        {/* <Link
-                                            href={`${process.env.NEXT_PUBLIC_STRIPE_CUSTOMER_PORTAL_URL as string}?prefilled_email=${user.email}`} 
-                                            target="_blank">
-                                            <Button size="sm" variant="outline" title="Gerenciar Assinatura">
-                                                <CreditCardIcon className="w-4 h-4" />
-                                            </Button>
-                                        </Link> */}
                                         <AlertDialog>
                                             <AlertDialogTrigger asChild>
                                                 <Button size="sm" variant="outline" disabled={submitting} title="Excluir">
