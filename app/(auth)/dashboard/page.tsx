@@ -22,11 +22,12 @@ import { Progress } from "@/components/ui/progress"
 import { useToast } from "@/hooks/use-toast"
 import Link from "next/link"
 import Image from "next/image"
-import { ProtectedRoute } from "@/components/protected-route"
-import { useAuth } from "@/contexts/auth-context"
 import { getDashboardStats, getCategoriesStats, getTopProviders, getMonthlyGrowth } from "@/lib/actions/dashboard"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { getInitialsName } from "@/lib/utils"
+import ButtonLogout from "./components/button-logout"
+import { useSession } from "next-auth/react"
+import { redirect, useRouter } from "next/navigation"
 
 interface DashboardStats {
   totalProviders: number
@@ -71,7 +72,15 @@ interface MonthlyGrowth {
 }
 
 export default function DashboardPage() {
-  const { user, logout } = useAuth()
+  const { data: session, status } =  useSession()
+  const loadingSession = status
+  const user = session?.user
+  const router = useRouter()
+  
+  if(loadingSession === "unauthenticated") {
+    redirect('/login')
+  }
+  
   const { toast } = useToast()
 
   const [loading, setLoading] = useState(true)
@@ -83,10 +92,10 @@ export default function DashboardPage() {
     topByRating: ProviderStats[]
   }>({ topByAccess: [], topByRating: [] })
   const [monthlyGrowth, setMonthlyGrowth] = useState<MonthlyGrowth | null>(null)
-
+  
   useEffect(() => {
     loadDashboardData()
-  }, [])
+  }, [user?.id])
 
   const loadDashboardData = async () => {    
     try {            
@@ -143,36 +152,19 @@ export default function DashboardPage() {
     return categoriesStats.find((cat) => cat.nome === nomeCategoria) || categoriesStats[0]
   }
 
-  if (loading) {
+  if (loadingSession === "loading" || dashboardStats === null) {
     return (
-      <ProtectedRoute>
         <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 flex items-center justify-center">
           <div className="text-center">
             <div className="w-16 h-16 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin mx-auto mb-4"></div>
             <p className="text-gray-600 font-medium">Carregando dashboard...</p>
           </div>
         </div>
-      </ProtectedRoute>
-    )
-  }
-
-  if (!dashboardStats) {
-    return (
-      <ProtectedRoute>
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 flex items-center justify-center">
-          <div className="text-center">
-            <p className="text-gray-600 font-medium">Erro ao carregar dados do dashboard</p>
-            <Button onClick={loadDashboardData} className="mt-4">
-              Tentar novamente
-            </Button>
-          </div>
-        </div>
-      </ProtectedRoute>
     )
   }
 
   return (
-    <ProtectedRoute>      
+    
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
         {/* Header */}
         <header className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 shadow-xl">
@@ -269,14 +261,7 @@ export default function DashboardPage() {
                     </>
                   )}
 
-                  <Button
-                    onClick={logout}
-                    variant="secondary"
-                    className="bg-red-500/20 hover:bg-red-500/30 text-white border-red-300/30 backdrop-blur-sm transition-all duration-300 hover:scale-105"
-                  >
-                    <LogOut className="w-4 h-4 mr-2" />
-                    Sair
-                  </Button>
+                  <ButtonLogout />
                 </div>
               </div>
             </div>
@@ -540,6 +525,5 @@ export default function DashboardPage() {
           </Card>
         </main>
       </div>
-    </ProtectedRoute>
   )
 }

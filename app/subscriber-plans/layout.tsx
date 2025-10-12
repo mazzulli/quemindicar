@@ -1,5 +1,5 @@
-import { AuthProvider } from "@/contexts/auth-context";
 import { ReactNode } from "react";
+import AuthProvider from "../auth-provider";
 
 const SubscribersLayout = ({children}: {children: ReactNode}) => {
     return ( 

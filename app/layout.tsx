@@ -21,8 +21,8 @@ export default function RootLayout({
   return (
     <html lang="pt-BR">
       <body className={inter.className}>
-            {children}
-            <Toaster />
+          {children}          
+          <Toaster />
       </body>
       {/* Script do Google Analytics */}
       <Script

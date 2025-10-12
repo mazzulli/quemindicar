@@ -1,9 +1,7 @@
 "use client"
 
-import { ProtectedRoute } from "@/components/protected-route"
 import { useEffect, useMemo } from "react"
 import { useToast } from "@/hooks/use-toast"
-import { useAuth } from "@/contexts/auth-context"
 import { useState } from "react"
 import Link from "next/link"
 import { User } from "@prisma/client"
@@ -27,6 +25,7 @@ import { useForm } from "react-hook-form"
 import { generatePassword, hashPassword } from "@/lib/utils"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import getCustomerLink from "../subscriptions/_data-access/get-customer-link"
+import { useSession } from "next-auth/react"
 
 // Defina o esquema do formulário com Zod
 const FormSchema = z.object({
@@ -41,12 +40,8 @@ const FormSchema = z.object({
 
 
 const UsersPage = () => {
-    const { user } = useAuth()
+    const {data: session, status} = useSession()
     const router = useRouter()
-
-    // if (user?.role !== "Administrator") {
-    //     router.push("/dashboard")        
-    // }
 
     const { toast } = useToast()    
     const [users, setUsers] = useState<User[] | undefined>([])
@@ -65,16 +60,16 @@ const UsersPage = () => {
 
     useEffect(() => {
         loadData()
-    }, [user?.email, user?.id]) // Recarrega quando o email, name ou role do usuário mudar
+    }, [session?.user?.email, session?.user?.id]) // Recarrega quando o email, name ou role do usuário mudar
 
     const loadData = async () => {
-        if(!user?.role)return
+        if(!session?.user?.role)return
         try {
-            console.log("USER ROLE: ", user?.role)
+            console.log("USER ROLE: ", session?.user?.role)
             const usersResult = 
-            user?.role === "Administrator"  
+            session?.user?.role === "Administrator"  
             ? await getUsers() 
-            : await getUserById(user?.id as string)
+            : await getUserById(session?.user?.id as string)
             
             if (usersResult.success) {
                 setUsers(usersResult.data as User[])
@@ -229,21 +224,18 @@ const UsersPage = () => {
         window.open(url, '_blank')
     }
 
-    if (loading) {
-        return (
-        <ProtectedRoute>
+    if (status === "loading") {
+        return (        
             <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 flex items-center justify-center">
                 <div className="text-center">
                     <div className="w-16 h-16 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin mx-auto mb-4"></div>
                     <p className="text-gray-600 font-medium">Carregando usuários...</p>
                 </div>
-            </div>
-        </ProtectedRoute>
+            </div>        
         )
     }
 
-    return (
-    <ProtectedRoute>
+    return (    
         <div className="min-h-screen bg-gray-50">
         {/* Header */}
         <header className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 shadow-xl">
@@ -508,8 +500,7 @@ const UsersPage = () => {
             </div>
             )}
         </main>
-        </div>
-    </ProtectedRoute>
+        </div>    
     )
 }
  

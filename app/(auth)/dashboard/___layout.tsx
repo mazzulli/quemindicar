@@ -1,5 +1,6 @@
+'use client'
 import type React from "react"
-import { AuthProvider } from "@/contexts/auth-context"
+import AuthProvider from "@/app/auth-provider"
 
 export default function DashboardLayout({
   children,
@@ -8,7 +9,7 @@ export default function DashboardLayout({
 }) {
   return (
     <AuthProvider>
-      {children}          
-    </AuthProvider>        
+      {children}    
+    </AuthProvider>
   )
 }

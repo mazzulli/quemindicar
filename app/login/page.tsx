@@ -1,29 +1,44 @@
 "use client"
 
 import React, { useState } from "react"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { Eye, EyeOff, Lock, Mail, LogIn, ArrowLeft, Sparkles } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { useToast } from "@/hooks/use-toast"
-import { useAuth } from "@/contexts/auth-context"
 import Link from "next/link"
+import { signIn } from "next-auth/react"
 
-export default function LoginPage() {
+export default function LoginPage() {  
+  const searchParams = useSearchParams()
+  const error = searchParams.get("error")
+  const { toast } = useToast()
+
+  if(error) {
+    toast({
+      title: "Ops",
+      description: "Login ou senha inválidos. Tente novamente.",
+      variant: "destructive",
+    })
+  }
+
+  const router = useRouter()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const { login } = useAuth()
-  const { toast } = useToast()
-  const router = useRouter()
+  const [isSubmitting, setIsSubmitting] = useState(false)  
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-
-    if (!email || !password) {
+    const formData = new FormData(e.currentTarget)
+    const data = {
+      email: formData.get("email") as string,
+      password: formData.get("password") as string,
+    }
+    
+    if (!data.email || !data.password) {
       toast({
         title: "Erro",
         description: "Por favor, preencha todos os campos.",
@@ -35,28 +50,25 @@ export default function LoginPage() {
     setIsSubmitting(true)
 
     try {
-      const success = await login(email, password)
+      //const success = await login(email, password)
+      await signIn("credentials", {
+        ...data,
+        callbackUrl: "/dashboard",
+      });
+
+      toast({
+        title: "Login realizado com sucesso!",
+        description: "Redirecionando para o dashboard...",
+      })
       
-      if (success) {
-        toast({
-          title: "Login realizado com sucesso!",
-          description: "Redirecionando para o dashboard...",
-        })
-        router.push("/dashboard")
-      } else {
-        toast({
+      router.push("/dashboard")      
+    } catch (error) {
+      toast({
           title: "Erro no login",
           description: "Email ou senha incorretos. Tente novamente.",
           variant: "destructive",
-        })
-      }
-    } catch (error) {
-      toast({
-        title: "Erro",
-        description: "Ocorreu um erro inesperado. Tente novamente.",
-        variant: "destructive",
-      })
-    } finally {
+        })      
+    } finally {      
       setIsSubmitting(false)
     }
   }
@@ -100,6 +112,7 @@ export default function LoginPage() {
                   <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5 group-focus-within:text-indigo-500 transition-colors" />
                   <Input
                     id="email"
+                    name="email"
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
@@ -119,6 +132,7 @@ export default function LoginPage() {
                   <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5 group-focus-within:text-indigo-500 transition-colors" />
                   <Input
                     id="password"
+                    name="password"
                     type={showPassword ? "text" : "password"}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
@@ -156,19 +170,6 @@ export default function LoginPage() {
                 )}
               </Button>
             </form>
-
-            {/* Credenciais de Teste */}
-            {/* <div className="mt-6 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-200">
-              <h3 className="text-sm font-semibold text-blue-800 mb-2">Credenciais de Teste:</h3>
-              <div className="space-y-1 text-xs text-blue-700">
-                <p>
-                  <strong>Admin:</strong> admin@prestadores.com / admin123
-                </p>
-                <p>
-                  <strong>Gestor:</strong> gestor@prestadores.com / gestor123
-                </p>
-              </div>
-            </div> */}
           </CardContent>
         </Card>
 

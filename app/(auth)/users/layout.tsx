@@ -1,5 +1,6 @@
+'use client'
 import type React from "react"
-import { AuthProvider } from "@/contexts/auth-context"
+import { SessionProvider } from "next-auth/react"
 
 export default function DashboardLayout({
   children,
@@ -7,8 +8,8 @@ export default function DashboardLayout({
   children: React.ReactNode
 }) {
   return (
-    <AuthProvider>
-      {children}          
-    </AuthProvider>        
+    <SessionProvider>
+      {children}    
+    </SessionProvider>
   )
 }
