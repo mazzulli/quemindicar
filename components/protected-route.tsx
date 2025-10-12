@@ -2,24 +2,11 @@
 
 import type React from "react"
 
-import { useEffect } from "react"
-import { redirect, useRouter } from "next/navigation"
-import { useAuth } from "@/contexts/auth-context"
-
 interface ProtectedRouteProps {
   children: React.ReactNode
 }
 
-export function ProtectedRoute({ children }: ProtectedRouteProps) {
-  const { user, isLoading } = useAuth()
-  const router = useRouter()
-
-  useEffect(() => {
-    if (!isLoading && !user) {
-      router.push("/login")
-    }
-  }, [user, isLoading, router])
-
+export function ProtectedRoute({ children }: ProtectedRouteProps, isLoading: boolean) {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 flex items-center justify-center">
@@ -29,10 +16,6 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
         </div>
       </div>
     )
-  }
-
-  if (!user) {
-    redirect("/login")
   }
 
   return <>{children}</>

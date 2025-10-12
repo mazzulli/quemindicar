@@ -15,9 +15,8 @@ import { ProtectedRoute } from "@/components/protected-route"
 import { getCategories } from "@/lib/actions/categories"
 import { createProvider } from "@/lib/actions/providers"
 import { ImageUpload } from "@/components/image-upload"
-import { useAuth } from "@/contexts/auth-context"
 import { useRouter } from "next/navigation"
-import { number } from "zod"
+import { useSession } from "next-auth/react"
 
 interface Category {
   id: number
@@ -27,12 +26,12 @@ interface Category {
   updatedAt: Date
 }
 
-export default function CadastroPage() {
-  const { user } = useAuth()
+export default function CadastroPage() {  
+  const { data: session, status } =  useSession()
   const router = useRouter()
 
-  // if (!user) {
-  //   router.push("/dashboard")
+  // if (!session?.user || status !== "authenticated") {
+  //   router.push("/")
   // }
 
   const { toast } = useToast()
@@ -47,7 +46,7 @@ export default function CadastroPage() {
     categoryId: "",
     description: "",
     phone: "",
-    email: user?.email || "sememail@email.com.br",
+    email: session?.user?.email || "sememail@email.com.br",
     zipCode: "",
     address: "",
     number: "",
@@ -133,7 +132,7 @@ export default function CadastroPage() {
         submitFormData.append("photo", selectedImage)
       }
       
-      submitFormData.append("email", user?.email || "sememail@email.com.br")
+      submitFormData.append("email", session?.user?.email || "sememail@email.com.br")
       console.log("Submitting form data:", Object.fromEntries(submitFormData.entries()))
       console.log("Submitting form data sem formatação:",JSON.stringify(Object.fromEntries(submitFormData.entries())))
 
@@ -152,7 +151,7 @@ export default function CadastroPage() {
           categoryId: "",
           description: "",
           phone: "",
-          email: user?.email || "sememail@email.com.br",
+          email: session?.user?.email || "sememail@email.com.br",
           zipCode: "",
           address: "",
           number: "",
@@ -189,19 +188,16 @@ export default function CadastroPage() {
 
   if (loading) {
     return (
-      <ProtectedRoute>
         <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 flex items-center justify-center">
           <div className="text-center">
             <div className="w-16 h-16 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin mx-auto mb-4"></div>
             <p className="text-gray-600 font-medium">Carregando...</p>
           </div>
         </div>
-      </ProtectedRoute>
     )
   }
 
   return (
-    <ProtectedRoute>
       <div className="min-h-screen bg-gray-50">
         {/* Header */}
         <header className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 shadow-xl">
@@ -327,7 +323,7 @@ export default function CadastroPage() {
                     <Label htmlFor="email">E-mail *</Label>
                     <Input
                       id="email"                      
-                      value={user?.email || formData.email}                       
+                      value={session?.user?.email || formData.email}                       
                       onChange={(e) => handleInputChange("email", e.target.value)}                                           
                       disabled={submitting}
                     />
@@ -513,6 +509,5 @@ export default function CadastroPage() {
           </form>
         </main>
       </div>
-    </ProtectedRoute>
   )
 }

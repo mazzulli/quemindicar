@@ -10,8 +10,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { useToast } from "@/hooks/use-toast"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { ProtectedRoute } from "@/components/protected-route"
-import { useAuth } from "@/contexts/auth-context"
 import { getUserById, updateUser } from "@/lib/actions/users"
 import {
   Select,
@@ -22,6 +20,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import getCustomerLink from "@/app/(auth)/subscriptions/_data-access/get-customer-link"
+import { useSession } from "next-auth/react"
 
 interface User {
   id: string
@@ -34,7 +33,7 @@ interface User {
 }
 
 export default function CustomerEditPage({ params }: { params: { id: string } }) {
-  const { user } = useAuth()
+  const { data: session, status } = useSession()
   const router = useRouter()
   const { toast } = useToast()
   
@@ -154,7 +153,7 @@ export default function CustomerEditPage({ params }: { params: { id: string } })
           title: "Sucesso!",
           description: result.message,
         })
-        router.push(user?.role==='Administrator' ? "/users" : "/dashboard")
+        router.push(session?.user?.role==='Administrator' ? "/users" : "/dashboard")
       } else {
         toast({
           title: "Erro",
@@ -181,23 +180,23 @@ export default function CustomerEditPage({ params }: { params: { id: string } })
 
   if (loading) {
     return (
-      <ProtectedRoute>
+      
         <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 flex items-center justify-center">
           <div className="text-center">
             <div className="w-16 h-16 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin mx-auto mb-4"></div>
             <p className="text-gray-600 font-medium">Carregando...</p>
           </div>
         </div>
-      </ProtectedRoute>
+      
     )
   }
 
-  if (!user) {
+  if (!session?.user?.email) {
     return null
   }
 
   return (
-    <ProtectedRoute>
+    
       <div className="min-h-screen bg-gray-50">
         {/* Header */}
         <header className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 shadow-xl">
@@ -212,7 +211,7 @@ export default function CustomerEditPage({ params }: { params: { id: string } })
                   <p className="text-white/80 text-sm">Atualize as informações de {customer?.name}</p>
                 </div>
               </div>
-              <Link href={user?.role==='Administrator' ? "/users" : "/dashboard"}>
+              <Link href={session?.user?.role==='Administrator' ? "/users" : "/dashboard"}>
                 <Button
                   variant="secondary"
                   className="bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur-sm transition-all duration-300 hover:scale-105"
@@ -254,12 +253,12 @@ export default function CustomerEditPage({ params }: { params: { id: string } })
                       onChange={(e) => handleInputChange("email", e.target.value)}
                       placeholder="exemplo@email.com"
                       required
-                      disabled={user?.role==='Administrator' ? false : true}
+                      disabled={session?.user?.role==='Administrator' ? false : true}
                     />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="role">Tipo de Acesso*</Label>
-                    <Select onValueChange={(value) => handleInputChange("role", value)} defaultValue={formData.role} disabled={user?.role==='Administrator' ? false : true}>
+                    <Select onValueChange={(value) => handleInputChange("role", value)} defaultValue={formData.role} disabled={session?.user?.role==='Administrator' ? false : true}>
                       <SelectTrigger className="w-full">
                         <SelectValue placeholder="Selecionar..." />
                       </SelectTrigger>
@@ -310,7 +309,7 @@ export default function CustomerEditPage({ params }: { params: { id: string } })
                 Gerenciar Assinatura
               </Button>
               <div className="flex gap-4 sm:justify-end justify-center flex-1 ">
-                <Link href={user?.role==='Administrator' ? "/users" : "/dashboard"}>
+                <Link href={session?.user?.role==='Administrator' ? "/users" : "/dashboard"}>
                   <Button
                     variant="outline"
                     className="border-2 border-gray-300 hover:border-indigo-500 transition-all duration-300 bg-transparent"
@@ -341,6 +340,6 @@ export default function CustomerEditPage({ params }: { params: { id: string } })
           </form>
         </main>
       </div>
-    </ProtectedRoute>
+    
   )
 }

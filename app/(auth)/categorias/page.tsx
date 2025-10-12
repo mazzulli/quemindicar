@@ -20,9 +20,9 @@ import {
 } from "@/components/ui/alert-dialog"
 import Link from "next/link"
 import { ProtectedRoute } from "@/components/protected-route"
-import { useAuth } from "@/contexts/auth-context"
 import { getCategories, createCategory, updateCategory, deleteCategory } from "@/lib/actions/categories"
 import { useRouter } from "next/navigation"
+import { useSession } from "next-auth/react"
 
 interface Category {
   id: number
@@ -33,12 +33,12 @@ interface Category {
 }
 
 export default function CategoriasPage() {
-  const { user } = useAuth()
+  const { data: session, status} = useSession()
   const router = useRouter()
 
-  // if (!user) {
-  //   router.push("/dashboard")
-  // }
+  if (session?.user?.role !== "Administrator" || session?.user === undefined) {
+    router.push("/")
+  }
 
   const { toast } = useToast()
   const [categories, setCategories] = useState<Category[] | undefined>([])
@@ -200,19 +200,16 @@ export default function CategoriasPage() {
 
   if (loading) {
     return (
-      <ProtectedRoute>
         <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 flex items-center justify-center">
           <div className="text-center">
             <div className="w-16 h-16 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin mx-auto mb-4"></div>
             <p className="text-gray-600 font-medium">Carregando categorias...</p>
           </div>
         </div>
-      </ProtectedRoute>
     )
   }
 
   return (
-    <ProtectedRoute>
       <div className="min-h-screen bg-gray-50">
         {/* Header */}
         <header className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 shadow-xl">
@@ -375,6 +372,5 @@ export default function CategoriasPage() {
           </div>
         </main>
       </div>
-    </ProtectedRoute>
   )
 }

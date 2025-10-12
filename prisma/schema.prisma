@@ -11,30 +11,50 @@ datasource db {
 }
 
 model User {
-  id               String    @id @default(uuid())
-  name             String    @db.VarChar(200)
-  email            String    @unique @db.VarChar(200)
-  passwordHash     String    @db.VarChar(255)
-  role             String    @default("Customer") @db.VarChar(50)
-  active           Boolean   @default(true)
-  stripeCustomerId String?   @db.VarChar(255)
+  id               String          @id @default(uuid())
+  name             String          @db.VarChar(200)
+  email            String          @unique @db.VarChar(200)
+  passwordHash     String          @db.VarChar(255)
+  role             String          @default("Customer") @db.VarChar(50)
+  active           Boolean         @default(true)
+  stripeCustomerId String?         @db.VarChar(255)
   lastLogin        DateTime?
-  createdAt        DateTime  @default(now()) @map("created_at")
-  updatedAt        DateTime  @updatedAt @map("updated_at")
-
-  sessions Session[]
+  createdAt        DateTime        @default(now()) @map("created_at")
+  updatedAt        DateTime        @updatedAt @map("updated_at")
+  accounts         Account[]
+  sessions         Session[]
+  // Optional for WebAuthn support
+  Authenticator    Authenticator[]
 
   @@map("users")
 }
 
+model Account {
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([provider, providerAccountId])
+}
+
 model Session {
-  id        Int      @id @default(autoincrement())
-  userId    String
-  token     String   @unique @db.VarChar(255)
-  expiresAt DateTime @map("expires_at")
-  ipAddress String?  @map("ip_address") @db.Inet
-  userAgent String?  @map("user_agent")
-  createdAt DateTime @default(now()) @map("created_at")
+  id           Int      @id @default(autoincrement())
+  userId       String
+  sessionToken String   @unique
+  expires      DateTime
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -96,4 +116,28 @@ model Rating {
   provider Provider @relation(fields: [providerId], references: [id], onDelete: Cascade)
 
   @@map("ratings")
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@id([identifier, token])
+}
+
+// Optional for WebAuthn support
+model Authenticator {
+  credentialID         String  @unique
+  userId               String
+  providerAccountId    String
+  credentialPublicKey  String
+  counter              Int
+  credentialDeviceType String
+  credentialBackedUp   Boolean
+  transports           String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([userId, credentialID])
 }

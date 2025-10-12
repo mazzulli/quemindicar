@@ -14,11 +14,11 @@ import { useToast } from "@/hooks/use-toast"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { ProtectedRoute } from "@/components/protected-route"
-import { useAuth } from "@/contexts/auth-context"
 import { getCategories } from "@/lib/actions/categories"
 import { getProviderById, updateProvider } from "@/lib/actions/providers"
 import { ImageUpload } from "@/components/image-upload"
 import { number } from "zod"
+import { useSession } from "next-auth/react"
 
 interface Category {
   id: number
@@ -61,8 +61,8 @@ interface Provider {
 }
 
 export default function EditarPrestadorPage({ params }: { params: { id: string } }) {
+  const { data: session, status } =  useSession()
   const { toast } = useToast()
-  const { user } = useAuth()
   const router = useRouter()
   const [categories, setCategories] = useState<Category[] | undefined>([])
   const [provider, setProvider] = useState<Provider | undefined>(undefined)
@@ -252,14 +252,12 @@ export default function EditarPrestadorPage({ params }: { params: { id: string }
 
   if (loading) {
     return (
-      <ProtectedRoute>
         <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 flex items-center justify-center">
           <div className="text-center">
             <div className="w-16 h-16 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin mx-auto mb-4"></div>
             <p className="text-gray-600 font-medium">Carregando...</p>
           </div>
         </div>
-      </ProtectedRoute>
     )
   }
 
@@ -268,7 +266,6 @@ export default function EditarPrestadorPage({ params }: { params: { id: string }
   }
 
   return (
-    <ProtectedRoute>
       <div className="min-h-screen bg-gray-50">
         {/* Header */}
         <header className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 shadow-xl">
@@ -602,6 +599,5 @@ export default function EditarPrestadorPage({ params }: { params: { id: string }
           </form>
         </main>
       </div>
-    </ProtectedRoute>
   )
 }
