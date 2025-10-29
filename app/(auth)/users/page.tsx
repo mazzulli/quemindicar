@@ -425,7 +425,9 @@ const UsersPage = () => {
                                             </Button>
                                         </Link>
                                         <Button size="sm" variant="outline" title="Gerenciar Assinatura" 
-                                        onClick={() => handleGenerateCustomerLink(user.stripeCustomerId as string)}>
+                                        onClick={() => handleGenerateCustomerLink(user.stripeCustomerId as string)}
+                                        disabled={!user.stripeCustomerId}
+                                        >
                                             <CreditCardIcon className="w-4 h-4" />
                                         </Button>
                                         <AlertDialog>

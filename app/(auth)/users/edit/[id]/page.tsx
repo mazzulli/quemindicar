@@ -304,7 +304,9 @@ export default function CustomerEditPage({ params }: { params: { id: string } })
             <div className="sm:flex flex-1 justify-center gap-4 space-y-4 sm:space-y-0">              
               <Button className="flex sm:w-[200px] w-full" variant="default" title="Gerenciar Assinatura" 
                 type="button"
-                onClick={() => handleGenerateCustomerLink(customer?.stripeCustomerId as string)}>
+                onClick={() => handleGenerateCustomerLink(customer?.stripeCustomerId as string)}
+                disabled={!customer?.stripeCustomerId} 
+                >
                 <CreditCardIcon className="w-4 h-4" />
                 Gerenciar Assinatura
               </Button>
