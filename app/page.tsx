@@ -221,10 +221,11 @@ export default function HomePage() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-3">
-              <label className="text-sm font-semibold text-gray-700">Buscar por nome</label>
+              <label htmlFor="SearchByName" className="text-sm font-semibold text-gray-700">Buscar por nome</label>
               <div className="relative group">
                 <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5 group-focus-within:text-indigo-500 transition-colors" />
                 <Input
+                  id="SearchByName"
                   placeholder="Digite o nome do prestador..."
                   value={filtroNome}
                   onChange={(e) => setFiltroNome(e.target.value)}
@@ -233,13 +234,13 @@ export default function HomePage() {
               </div>
             </div>
             <div className="space-y-3">
-              <label className="text-sm font-semibold text-gray-700">Filtrar por categoria</label>
+              <label htmlFor="CategoryFilter" className="text-sm font-semibold text-gray-700">Filtrar por categoria</label>
               <Select value={filtroCategoria} onValueChange={setFiltroCategoria}>
                 <SelectTrigger className="h-12 border-2 border-gray-200 focus:border-indigo-500 rounded-xl transition-all duration-300 hover:shadow-md">
                   <SelectValue placeholder="Selecione uma categoria" />
                 </SelectTrigger>
                 <SelectContent className="rounded-xl border-2">
-                  <SelectItem value="all" className="rounded-lg">
+                  <SelectItem id="CategoryFilter" value="all" className="rounded-lg">
                     <div className="flex items-center gap-2">
                       <span>🌟</span>
                       <span>Todas as categorias</span>
@@ -248,7 +249,7 @@ export default function HomePage() {
                   {categories?.map((categoria) => {
                     const categoryInfo = getCategoriaInfo(categoria.name)
                     return (
-                      <SelectItem key={categoria.id} value={categoria.name} className="rounded-lg">
+                      <SelectItem id="CategoryFilter" key={categoria.id} value={categoria.name} className="rounded-lg">
                         <div className="flex items-center gap-2">
                           <span>{categoryInfo.icon}</span>
                           <span>{categoria.name}</span>
