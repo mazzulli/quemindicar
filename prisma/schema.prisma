@@ -98,8 +98,9 @@ model Provider {
   createdAt    DateTime @default(now()) @map("created_at")
   updatedAt    DateTime @updatedAt @map("updated_at")
 
-  category Category @relation(fields: [categoryId], references: [id])
-  ratings  Rating[]
+  category       Category        @relation(fields: [categoryId], references: [id])
+  ratings        Rating[]
+  clicksCounters ClicksCounter[]
 
   @@map("providers")
 }
@@ -116,6 +117,16 @@ model Rating {
   provider Provider @relation(fields: [providerId], references: [id], onDelete: Cascade)
 
   @@map("ratings")
+}
+
+model ClicksCounter {
+  id         String   @unique @default(uuid())
+  providerId Int
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  provider Provider @relation(fields: [providerId], references: [id], onDelete: Cascade)
+
+  @@map("clicksCounter")
 }
 
 model VerificationToken {
