@@ -18,7 +18,7 @@ import logoQuemIndicar  from "../public/logo-q.png"
 import { ProviderDetailsModal } from "@/components/provider-details-modal"
 import { ReviewsModal } from "@/components/reviews-modal"
 import { formatPhoneNumber } from "@/lib/utils"
-
+import { RegisterClick, getClicksByProvider, getClicksGroup } from "@/lib/actions/clicks"
 interface Category {
   id: number
   name: string
@@ -50,6 +50,11 @@ interface Provider {
   createdAt: Date
   updatedAt: Date
 }
+
+interface PropsRegisterClicks {
+  success: boolean
+  message: string
+} 
 
 export default function HomePage() {
   const [filtroNome, setFiltroNome] = useState("")
@@ -112,6 +117,14 @@ export default function HomePage() {
     setCurrentPage(page)
     // Scroll suave para o topo da lista
     window.scrollTo({ top: 0, behavior: "smooth" })
+  }
+  
+  // Registra o clique para fins de análise    
+  const handleClicks = async (providerId:number) => {    
+    const registerClick:PropsRegisterClicks = await RegisterClick(providerId as number)
+    if (registerClick.success === false) {
+      console.error("Erro ao registrar clique:", registerClick.message)
+    }    
   }
 
   const handleItemsPerPageChange = (newItemsPerPage: number) => {
@@ -329,7 +342,10 @@ export default function HomePage() {
                         categoryInfo={categoriaInfo}
                         onRatingSubmit={handleRatingSubmit}
                       >
-                        <CardTitle className="sm:text-sm text-3xl group-hover:text-indigo-600 transition-colors duration-300 truncate cursor-pointer hover:underline">
+                        <CardTitle 
+                          className="sm:text-sm text-3xl group-hover:text-indigo-600 transition-colors duration-300 truncate cursor-pointer hover:underline"
+                          onClick={()=>handleClicks(prestador.id)}
+                          >
                           {prestador.title}
                         </CardTitle>
                       </ProviderDetailsModal>                        
@@ -357,10 +373,24 @@ export default function HomePage() {
                         <Phone className="w-5 h-5 sm:w-2.5 sm:h-2.5 text-white" />
                       </div>
                                             
-                      <Link href={`https://wa.me/55${prestador.phone.trim().replaceAll(" ","").replaceAll("-","")}?text=Olá! Vi seu anúncio no site www.quemindicar.com.br e gostaria de mais informações sobre seus serviços...`} 
+                      <div className="relative w-fit overflow-hidden">
+                        <p className="text-[16px] font-normal leading-none">
+                          {prestador.phone.trim().substring(0, 7)}
+                        </p>
+                        <div 
+                          className="absolute right-0 top-0 h-full w-16 bg-gradient-to-r from-transparent to-card"
+                        />
+                      </div>
+
+
+                      <Link 
+                        href={`https://wa.me/55${prestador.phone.trim().replaceAll(" ","").replaceAll("-","")}?text=Olá! Vi seu anúncio no site www.quemindicar.com.br e gostaria de mais informações sobre seus serviços...`}
                         target="_blank" 
-                        className="text-green-600 hover:underline font-medium truncate text-xl sm:text-sm">
-                        <span className="font-medium truncate">{formatPhoneNumber(prestador.phone)}</span>                        
+                        className="text-green-600 hover:underline font-medium truncate text-xl sm:text-sm"
+                         onClick={()=>handleClicks(prestador.id)}
+                        >
+                        <span className="font-medium truncate">Clique para ver</span>                        
+                        {/* <span className="font-medium truncate">{formatPhoneNumber(prestador.phone)}</span>                         */}
                       </Link>
                     </div>
 
