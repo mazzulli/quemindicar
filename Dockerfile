@@ -7,7 +7,7 @@ WORKDIR /app
 COPY package*.json .
 COPY prisma prisma
 
-RUN yarn install
+RUN npm install
 
 COPY . .
 
