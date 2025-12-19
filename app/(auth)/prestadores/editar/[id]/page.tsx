@@ -173,6 +173,40 @@ export default function EditarPrestadorPage({ params }: { params: { id: string }
     }))
   }
 
+  const handleZipCodeBlur = async () => {
+    const cep = formData.zipCode.replace(/\D/g, '')
+    if (cep.length !== 8) return
+
+    try {
+      const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`)
+      const data = await response.json()
+
+      if (data.erro) {
+        toast({
+          title: "CEP inválido",
+          description: "Verifique o CEP digitado.",
+          variant: "destructive",
+        })
+        return
+      }
+
+      setFormData(prev => ({
+        ...prev,
+        address: data.logradouro || '',
+        complement: data.complemento || '',
+        neighborhood: data.bairro || '',
+        city: data.localidade || '',
+        state: data.uf || '',
+      }))
+    } catch (error) {
+      toast({
+        title: "Erro",
+        description: "Erro ao buscar CEP.",
+        variant: "destructive",
+      })
+    }
+  }
+
   const handleImageChange = (file: File | null) => {
     setSelectedImage(file)
     if (file) {
@@ -425,6 +459,7 @@ export default function EditarPrestadorPage({ params }: { params: { id: string }
                     id="zipCode"
                     value={formData.zipCode}
                     onChange={(e) => handleInputChange("zipCode", e.target.value)}
+                    onBlur={handleZipCodeBlur}
                     placeholder="00000-000"                    
                   />
                 </div>
