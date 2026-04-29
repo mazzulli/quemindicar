@@ -2,7 +2,7 @@
 
 import type React from "react"
 import { useState, useEffect } from "react"
-import { ArrowLeft, Save, Plus } from "lucide-react"
+import { ArrowLeft, Save, Plus, CheckCircle2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -11,12 +11,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { useToast } from "@/hooks/use-toast"
 import Link from "next/link"
-import { ProtectedRoute } from "@/components/protected-route"
 import { getCategories } from "@/lib/actions/categories"
 import { createProvider } from "@/lib/actions/providers"
 import { ImageUpload } from "@/components/image-upload"
 import { useRouter } from "next/navigation"
 import { useSession } from "next-auth/react"
+import Header from "@/components/header"
 
 interface Category {
   id: number
@@ -39,6 +39,7 @@ export default function CadastroPage() {
   const [loading, setLoading] = useState(true)
   const [submitting, setSubmitting] = useState(false)
   const [selectedImage, setSelectedImage] = useState<File | null>(null)
+  const [success, setSuccess] = useState(false)
 
   const [formData, setFormData] = useState({
     title: "",
@@ -201,7 +202,8 @@ export default function CadastroPage() {
           tiktok: "",
         })
         setSelectedImage(null)
-        router.push("/prestadores")
+        setSuccess(true)
+        // router.push("/cadastro")
       } else {
         toast({
           title: "Ops",
@@ -231,318 +233,356 @@ export default function CadastroPage() {
     )
   }
 
-  return (
-      <div className="min-h-screen bg-gray-50">
-        {/* Header */}
-        <header className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 shadow-xl">
-          <div className="container mx-auto px-4 py-6">
-            <div className="flex items-center gap-4  justify-between">              
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
-                  <Plus className="w-6 h-6 text-white" />
-                </div>
-                <div>
-                  <h1 className="text-3xl font-bold text-white">Cadastro de Anúncio</h1>
-                  <p className="text-white/80 text-sm">Adicione um novo anúncio à plataforma</p>
-                </div>
-              </div>              
-              <Link href={"/prestadores"}>
-                <Button
-                  variant="secondary"
-                  className="bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur-sm transition-all duration-300 hover:scale-105"
-                >
-                  <ArrowLeft className="w-4 h-4 mr-2" />
-                  Voltar
-                </Button>
-              </Link>
+  if (success){
+    return (
+      <>
+        <Header />
+        <section id="lead" className="py-24 lg:py-32 bg-white">
+          <div className="max-w-xl mx-auto px-4 text-center">
+            <div className="p-12 rounded-3xl bg-green-50 border border-green-100">
+              <CheckCircle2 className="w-16 h-16 text-green-500 mx-auto mb-4" />
+              <h3 className="text-2xl font-bold text-[#0F1B4C] mb-2">
+                Anúncio criado com sucesso!
+              </h3>
+              <p className="text-gray-500">
+                Seu anúncio foi criado com sucesso e está sendo revisado antes da liberação. Aguarde que em até 24h ele estará disponível para o público. Obrigado por contribuir com a nossa comunidade!
+              </p>
+              {/* Call to Action */}
+              <div className="pb-4 md:pb-0 mt-6">
+                <Link href="/" passHref>
+                  <Button 
+                    className="bg-purple-600 hover:bg-purple-700 text-white font-bold text-lg px-8 py-4 rounded-xl transition-all transform hover:scale-105 active:scale-95 shadow-md"
+                    onClick={()=>setSuccess(false)}
+                    >
+                    Buscar indicações
+                  </Button>
+                </Link>
+              </div>
             </div>
-          </div>
-        </header>
+          </div>          
+        </section>
+      </>
+    );    
+  }  
 
-        <main className="container mx-auto px-4 py-8 bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 min-h-screen">
-          <form onSubmit={handleSubmit} className="max-w-4xl mx-auto space-y-8">
-            {/* Informações Básicas */}
-            <Card className="bg-white/80 backdrop-blur-sm border-2 border-white/50 shadow-xl rounded-2xl animate-fade-in">
-              <CardHeader>
-                <CardTitle>Informações Básicas</CardTitle>
-              </CardHeader>
-              <CardDescription className="px-6 mt-4 mb-8 text-sm text-gray-600">
-                Ao enviar meus dados eu autorizo ao proprietário do site www.quemindicar.com.br a utilizar 
-                e compartilhar minhas informações para divulgação destes dados ao público através do acesso 
-                ao site www.quemindicar.com.br. Compreendo que a minha autorização é livre e pode ser revogada 
-                a qualquer momento. Também assumo que li e entendi os Termos de Uso e a Política de Privacidade 
-                que estão disponíveis na página de inscrição.
-              </CardDescription>
-              <CardContent className="space-y-6">
-                {/* Upload de Foto */}
-                <ImageUpload onImageChange={handleImageChange} disabled={submitting} />
+  return (
+      <>
+        <Header />
+        
+        <div className="min-h-screen bg-gray-50">
+          {/* Header */}
+          <header className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 shadow-xl">
+            <div className="container mx-auto px-4 py-6">
+              <div className="flex items-center gap-4  justify-between">              
+                <div className="flex items-center gap-3 w-full justify-between">
+                  <div className="flex justify-start gap-2">
+                    <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
+                      <Plus className="w-6 h-6 text-white" />
+                    </div>
+                    <div>
+                      <h1 className="text-3xl font-bold text-white">Cadastro de Anúncio</h1>
+                      <p className="text-white/80 text-sm">Adicione um novo anúncio à plataforma</p>
+                    </div>
+                  </div> 
+                  <Link href={"/"}>
+                    <Button
+                      variant="secondary"
+                      className="bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur-sm transition-all duration-300 hover:scale-105"
+                    >
+                      <ArrowLeft className="w-4 h-4 mr-2" />
+                      Voltar
+                    </Button>
+                  </Link>
+                </div>                            
+              </div>
+            </div>
+          </header>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <main className="container mx-auto px-4 py-8 bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 min-h-screen">
+            <form onSubmit={handleSubmit} className="max-w-4xl mx-auto space-y-8">
+              {/* Informações Básicas */}
+              <Card className="bg-white/80 backdrop-blur-sm border-2 border-white/50 shadow-xl rounded-2xl animate-fade-in">
+                <CardHeader>
+                  <CardTitle>Informações Básicas</CardTitle>
+                </CardHeader>
+                <CardDescription className="px-6 mt-4 mb-8 text-sm text-gray-600">
+                  Ao enviar meus dados eu autorizo ao proprietário do site www.quemindicar.com.br a utilizar 
+                  e compartilhar minhas informações para divulgação destes dados ao público através do acesso 
+                  ao site www.quemindicar.com.br. Compreendo que a minha autorização é livre e pode ser revogada 
+                  a qualquer momento. Também assumo que li e entendi os Termos de Uso e a Política de Privacidade 
+                  que estão disponíveis na página de inscrição.
+                </CardDescription>
+                <CardContent className="space-y-6">
+                  {/* Upload de Foto */}
+                  <ImageUpload onImageChange={handleImageChange} disabled={submitting} />
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="titulo">Título/Nome *</Label>
+                      <Input
+                        id="titulo"
+                        value={formData.title}
+                        onChange={(e) => handleInputChange("title", e.target.value)}
+                        placeholder="Ex: Maria Silva"
+                        required
+                        disabled={submitting}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="subtitulo">Subtítulo/Especialidade</Label>
+                      <Input
+                        id="subtitulo"
+                        value={formData.subtitle}
+                        onChange={(e) => handleInputChange("subtitle", e.target.value)}
+                        placeholder="Ex: Esteticista Especializada"
+                        disabled={submitting}
+                      />
+                    </div>
+                  </div>
+
                   <div className="space-y-2">
-                    <Label htmlFor="titulo">Título/Nome *</Label>
-                    <Input
-                      id="titulo"
-                      value={formData.title}
-                      onChange={(e) => handleInputChange("title", e.target.value)}
-                      placeholder="Ex: Maria Silva"
-                      required
+                    <Label htmlFor="categoria">Categoria *</Label>
+                    <Select
+                      value={formData.categoryId}
+                      onValueChange={(value) => handleInputChange("categoryId", value)}
+                      disabled={submitting}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Selecione uma categoria" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {categories?.map((categoria) => (
+                          <SelectItem key={categoria.id} value={categoria.id.toString()}>
+                            {categoria.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="descricao">Descrição dos Serviços</Label>
+                    <Textarea
+                      id="descricao"
+                      value={formData.description}
+                      onChange={(e) => handleInputChange("description", e.target.value)}
+                      placeholder="Descreva os serviços prestados..."
+                      rows={4}
                       disabled={submitting}
                     />
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="subtitulo">Subtítulo/Especialidade</Label>
+                </CardContent>
+              </Card>
+
+              {/* Informações de Contato */}
+              <Card className="bg-white/80 backdrop-blur-sm border-2 border-white/50 shadow-xl rounded-2xl animate-fade-in">
+                <CardHeader>
+                  <CardTitle>Informações de Contato</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="telefone">Telefone *</Label>
+                      <Input
+                        id="telefone"
+                        value={formData.phone}
+                        onChange={(e) => handleInputChange("phone", e.target.value)}
+                        placeholder="(11) 99999-9999"
+                        required
+                        disabled={submitting}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="email">E-mail *</Label>
+                      <Input
+                        id="email"                      
+                        value={session?.user?.email || formData.email}                       
+                        onChange={(e) => handleInputChange("email", e.target.value)}                                           
+                        disabled={submitting}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-2 w-full sm:w-1/5">                  
+                    <Label htmlFor="zipCode">Cep</Label>
                     <Input
-                      id="subtitulo"
-                      value={formData.subtitle}
-                      onChange={(e) => handleInputChange("subtitle", e.target.value)}
-                      placeholder="Ex: Esteticista Especializada"
+                      id="zipCode"
+                      value={formData.zipCode}
+                      onChange={(e) => handleInputChange("zipCode", e.target.value)}
+                      onBlur={handleZipCodeBlur}
+                      placeholder="00000-000"                    
+                    />
+                  </div>
+                  <div className="flex gap-4 w-full flex-col sm:flex-row">
+                    <div className="space-y-2 w-full">
+                      <Label htmlFor="endereco">Endereço</Label>
+                      <Input
+                        id="endereco"
+                        value={formData.address}
+                        onChange={(e) => handleInputChange("address", e.target.value)}
+                        
+                      />
+                    </div>
+                    <div className="space-y-2 w-[120px]">
+                      <Label htmlFor="number">Número</Label>
+                      <Input
+                        id="number"
+                        value={formData.number}
+                        onChange={(e) => handleInputChange("number", e.target.value)}                      
+                        disabled={submitting}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="complement">Complemento</Label>
+                    <Input
+                      id="complement"
+                      value={formData.complement}
+                      onChange={(e) => handleInputChange("complement", e.target.value)}                    
                       disabled={submitting}
                     />
                   </div>
-                </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="categoria">Categoria *</Label>
-                  <Select
-                    value={formData.categoryId}
-                    onValueChange={(value) => handleInputChange("categoryId", value)}
+                  <div className="flex gap-4 w-full flex-col sm:flex-row justify-stretch">
+                    <div className="space-y-2 flex-1" >
+                      <Label htmlFor="neighborhood">Bairro</Label>
+                      <Input
+                        id="neighborhood"
+                        value={formData.neighborhood}
+                        onChange={(e) => handleInputChange("neighborhood", e.target.value)}                      
+                        disabled={submitting}
+                      />
+                    </div>
+
+                    <div className="space-y-2 flex-1">
+                      <Label htmlFor="city">Cidade</Label>
+                      <Input
+                        id="city"
+                        value={formData.city}
+                        onChange={(e) => handleInputChange("city", e.target.value)}
+                        disabled={submitting}
+                      />
+                    </div>
+
+                    <div className="space-y-2 sm:w-[80px] w-full">
+                      <Label htmlFor="state">Estado</Label>
+                      <Input
+                        id="state"
+                        value={formData.state}
+                        onChange={(e) => handleInputChange("state", e.target.value)}
+                        disabled={submitting}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="site">Site</Label>
+                    <Input
+                      id="site"
+                      type="url"
+                      value={formData.website}
+                      onChange={(e) => handleInputChange("website", e.target.value)}
+                      placeholder="https://seusite.com.br"
+                      disabled={submitting}
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Redes Sociais */}
+              <Card className="bg-white/80 backdrop-blur-sm border-2 border-white/50 shadow-xl rounded-2xl animate-fade-in">
+                <CardHeader>
+                  <CardTitle>Redes Sociais</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="instagram">Instagram</Label>
+                      <Input
+                        id="instagram"
+                        value={formData.instagram}
+                        onChange={(e) => handleInputChange("instagram", e.target.value)}
+                        placeholder="@seuusuario"
+                        disabled={submitting}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="facebook">Facebook</Label>
+                      <Input
+                        id="facebook"
+                        value={formData.facebook}
+                        onChange={(e) => handleInputChange("facebook", e.target.value)}
+                        placeholder="Sua Página no Facebook"
+                        disabled={submitting}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="youtube">YouTube</Label>
+                      <Input
+                        id="youtube"
+                        value={formData.youtube}
+                        onChange={(e) => handleInputChange("youtube", e.target.value)}
+                        placeholder="Seu Canal no YouTube"
+                        disabled={submitting}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="linkedin">LinkedIn</Label>
+                      <Input
+                        id="linkedin"
+                        value={formData.linkedin}
+                        onChange={(e) => handleInputChange("linkedin", e.target.value)}
+                        placeholder="Seu perfil no LinkedIn"
+                        disabled={submitting}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="tiktok">TikTok</Label>
+                      <Input
+                        id="tiktok"
+                        value={formData.tiktok}
+                        onChange={(e) => handleInputChange("tiktok", e.target.value)}
+                        placeholder="@seuusuario"
+                        disabled={submitting}
+                      />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Botões de Ação */}
+              <div className="flex justify-end gap-4">
+                <Link href="/">
+                  <Button
+                    variant="outline"
+                    className="border-2 border-gray-300 hover:border-indigo-500 transition-all duration-300 bg-transparent"
                     disabled={submitting}
                   >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Selecione uma categoria" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {categories?.map((categoria) => (
-                        <SelectItem key={categoria.id} value={categoria.id.toString()}>
-                          {categoria.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="descricao">Descrição dos Serviços</Label>
-                  <Textarea
-                    id="descricao"
-                    value={formData.description}
-                    onChange={(e) => handleInputChange("description", e.target.value)}
-                    placeholder="Descreva os serviços prestados..."
-                    rows={4}
-                    disabled={submitting}
-                  />
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Informações de Contato */}
-            <Card className="bg-white/80 backdrop-blur-sm border-2 border-white/50 shadow-xl rounded-2xl animate-fade-in">
-              <CardHeader>
-                <CardTitle>Informações de Contato</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="telefone">Telefone *</Label>
-                    <Input
-                      id="telefone"
-                      value={formData.phone}
-                      onChange={(e) => handleInputChange("phone", e.target.value)}
-                      placeholder="(11) 99999-9999"
-                      required
-                      disabled={submitting}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="email">E-mail *</Label>
-                    <Input
-                      id="email"                      
-                      value={session?.user?.email || formData.email}                       
-                      onChange={(e) => handleInputChange("email", e.target.value)}                                           
-                      disabled={submitting}
-                    />
-                  </div>
-                </div>
-
-                <div className="space-y-2 w-full sm:w-1/5">                  
-                  <Label htmlFor="zipCode">Cep</Label>
-                  <Input
-                    id="zipCode"
-                    value={formData.zipCode}
-                    onChange={(e) => handleInputChange("zipCode", e.target.value)}
-                    onBlur={handleZipCodeBlur}
-                    placeholder="00000-000"                    
-                  />
-                </div>
-                <div className="flex gap-4 w-full flex-col sm:flex-row">
-                  <div className="space-y-2 w-full">
-                    <Label htmlFor="endereco">Endereço</Label>
-                    <Input
-                      id="endereco"
-                      value={formData.address}
-                      onChange={(e) => handleInputChange("address", e.target.value)}
-                      
-                    />
-                  </div>
-                  <div className="space-y-2 w-[120px]">
-                    <Label htmlFor="number">Número</Label>
-                    <Input
-                      id="number"
-                      value={formData.number}
-                      onChange={(e) => handleInputChange("number", e.target.value)}                      
-                      disabled={submitting}
-                    />
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="complement">Complemento</Label>
-                  <Input
-                    id="complement"
-                    value={formData.complement}
-                    onChange={(e) => handleInputChange("complement", e.target.value)}                    
-                    disabled={submitting}
-                  />
-                </div>
-
-                <div className="flex gap-4 w-full flex-col sm:flex-row justify-stretch">
-                  <div className="space-y-2 flex-1" >
-                    <Label htmlFor="neighborhood">Bairro</Label>
-                    <Input
-                      id="neighborhood"
-                      value={formData.neighborhood}
-                      onChange={(e) => handleInputChange("neighborhood", e.target.value)}                      
-                      disabled={submitting}
-                    />
-                  </div>
-
-                  <div className="space-y-2 flex-1">
-                    <Label htmlFor="city">Cidade</Label>
-                    <Input
-                      id="city"
-                      value={formData.city}
-                      onChange={(e) => handleInputChange("city", e.target.value)}
-                      disabled={submitting}
-                    />
-                  </div>
-
-                  <div className="space-y-2 sm:w-[80px] w-full">
-                    <Label htmlFor="state">Estado</Label>
-                    <Input
-                      id="state"
-                      value={formData.state}
-                      onChange={(e) => handleInputChange("state", e.target.value)}
-                      disabled={submitting}
-                    />
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="site">Site</Label>
-                  <Input
-                    id="site"
-                    type="url"
-                    value={formData.website}
-                    onChange={(e) => handleInputChange("website", e.target.value)}
-                    placeholder="https://seusite.com.br"
-                    disabled={submitting}
-                  />
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Redes Sociais */}
-            <Card className="bg-white/80 backdrop-blur-sm border-2 border-white/50 shadow-xl rounded-2xl animate-fade-in">
-              <CardHeader>
-                <CardTitle>Redes Sociais</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="instagram">Instagram</Label>
-                    <Input
-                      id="instagram"
-                      value={formData.instagram}
-                      onChange={(e) => handleInputChange("instagram", e.target.value)}
-                      placeholder="@seuusuario"
-                      disabled={submitting}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="facebook">Facebook</Label>
-                    <Input
-                      id="facebook"
-                      value={formData.facebook}
-                      onChange={(e) => handleInputChange("facebook", e.target.value)}
-                      placeholder="Sua Página no Facebook"
-                      disabled={submitting}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="youtube">YouTube</Label>
-                    <Input
-                      id="youtube"
-                      value={formData.youtube}
-                      onChange={(e) => handleInputChange("youtube", e.target.value)}
-                      placeholder="Seu Canal no YouTube"
-                      disabled={submitting}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="linkedin">LinkedIn</Label>
-                    <Input
-                      id="linkedin"
-                      value={formData.linkedin}
-                      onChange={(e) => handleInputChange("linkedin", e.target.value)}
-                      placeholder="Seu perfil no LinkedIn"
-                      disabled={submitting}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="tiktok">TikTok</Label>
-                    <Input
-                      id="tiktok"
-                      value={formData.tiktok}
-                      onChange={(e) => handleInputChange("tiktok", e.target.value)}
-                      placeholder="@seuusuario"
-                      disabled={submitting}
-                    />
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Botões de Ação */}
-            <div className="flex justify-end gap-4">
-              <Link href="/dashboard">
+                    Cancelar
+                  </Button>
+                </Link>
                 <Button
-                  variant="outline"
-                  className="border-2 border-gray-300 hover:border-indigo-500 transition-all duration-300 bg-transparent"
+                  type="submit"
+                  className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white transition-all duration-300 hover:scale-105 shadow-lg disabled:opacity-50"
                   disabled={submitting}
                 >
-                  Cancelar
+                  {submitting ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
+                      Salvando...
+                    </>
+                  ) : (
+                    <>
+                      <Save className="w-4 h-4 mr-2" />
+                      Salvar Anúncio
+                    </>
+                  )}
                 </Button>
-              </Link>
-              <Button
-                type="submit"
-                className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white transition-all duration-300 hover:scale-105 shadow-lg disabled:opacity-50"
-                disabled={submitting}
-              >
-                {submitting ? (
-                  <>
-                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
-                    Salvando...
-                  </>
-                ) : (
-                  <>
-                    <Save className="w-4 h-4 mr-2" />
-                    Salvar Anúncio
-                  </>
-                )}
-              </Button>
-            </div>
-          </form>
-        </main>
-      </div>
+              </div>
+            </form>
+          </main>
+        </div>
+      </>
   )
 }
