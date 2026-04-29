@@ -170,6 +170,7 @@ export async function createProvider(formData: FormData) {
       youtube: formData.get("youtube") as string,
       linkedin: formData.get("linkedin") as string,
       tiktok: formData.get("tiktok") as string,
+      isActive: false,
     };
 
     console.log("Dados recebidos de email: ", formData.get("email") as string);
@@ -226,6 +227,7 @@ export async function createProvider(formData: FormData) {
       youtube: validatedData.youtube || null,
       linkedin: validatedData.linkedin || null,
       tiktok: validatedData.tiktok || null,
+      active: false,
     };
 
     const provider = await prisma.provider.create({
@@ -238,8 +240,8 @@ export async function createProvider(formData: FormData) {
       },
     });
 
-    revalidatePath("/");
-    revalidatePath("/dashboard");
+    // revalidatePath("/");
+    // revalidatePath("/dashboard");
 
     return {
       success: true,

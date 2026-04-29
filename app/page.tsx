@@ -19,6 +19,8 @@ import { ProviderDetailsModal } from "@/components/provider-details-modal"
 import { ReviewsModal } from "@/components/reviews-modal"
 import { formatPhoneNumber } from "@/lib/utils"
 import { RegisterClick, getClicksByProvider, getClicksGroup } from "@/lib/actions/clicks"
+import ProviderFreeSubscription from "@/components/provider-free-subscription"
+import Header from "@/components/header"
 interface Category {
   id: number
   name: string
@@ -183,7 +185,7 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
       {/* Header com gradiente vibrante */}
-      <header className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 shadow-xl">
+      {/* <header className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 shadow-xl">
         <div className="container mx-auto px-4 py-6">
           <div className="flex items-center justify-between flex-col sm:flex-row">
             <div className="flex items-center gap-3">
@@ -219,8 +221,13 @@ export default function HomePage() {
             </div>
           </div>
         </div>
-      </header>
+      </header> */}
+      
+      <Header />
 
+      <main className="container mx-auto px-4 py-8">
+        <ProviderFreeSubscription />
+      </main>
       <main className="container mx-auto px-4 py-8">
         {/* Filtros com design moderno */}
         <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/50 p-8 mb-8 animate-fade-in">
