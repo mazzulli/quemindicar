@@ -19,6 +19,7 @@ import { ProviderDetailsModal } from "@/components/provider-details-modal"
 import { ReviewsModal } from "@/components/reviews-modal"
 import { formatPhoneNumber } from "@/lib/utils"
 import { RegisterClick, getClicksByProvider, getClicksGroup } from "@/lib/actions/clicks"
+import ProviderFreeSubscription from "@/components/provider-free-subscription"
 interface Category {
   id: number
   name: string
@@ -221,6 +222,9 @@ export default function HomePage() {
         </div>
       </header>
 
+      <main className="container mx-auto px-4 py-8">
+        <ProviderFreeSubscription />
+      </main>
       <main className="container mx-auto px-4 py-8">
         {/* Filtros com design moderno */}
         <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/50 p-8 mb-8 animate-fade-in">
