@@ -116,7 +116,7 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f5f9;
+  background: #f01671;
   border-radius: 10px;
 }
 
@@ -136,7 +136,8 @@
 
 /* Animação de carregamento */
 .loading-shimmer {
-  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background: linear-gradient(90deg, #f01671 25%, #e0e0e0 50%, #f01671 75%);
+  /* background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);   */
   background-size: 200% 100%;
   animation: shimmer 2s infinite;
 }

@@ -173,7 +173,7 @@ export default function HomePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-[#f01671] via-blue-50 to-orange-500 flex items-center justify-center">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin mx-auto mb-4"></div>
           <p className="text-gray-600 font-medium">Carregando prestadores...</p>
@@ -183,7 +183,7 @@ export default function HomePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
+    <div className="min-h-screen bg-gradient-to-br from-[#f01671] via-[#f01671] to-orange-500">
       {/* Header com gradiente vibrante */}
       {/* <header className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 shadow-xl">
         <div className="container mx-auto px-4 py-6">
@@ -232,10 +232,10 @@ export default function HomePage() {
         {/* Filtros com design moderno */}
         <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/50 p-8 mb-8 animate-fade-in">
           <div className="flex items-center gap-3 mb-6">
-            <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
+            <div className="w-8 h-8 bg-gradient-to-r from-[#f01671] to-pink-500 rounded-full flex items-center justify-center">
               <Search className="w-4 h-4 text-white" />
             </div>
-            <h2 className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+            <h2 className="text-2xl font-bold bg-gradient-to-r from-[#f01671] to-pink-500 bg-clip-text text-transparent">
               Encontre seu profissional ideal
             </h2>
           </div>

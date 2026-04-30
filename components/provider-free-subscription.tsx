@@ -23,8 +23,10 @@ const ProviderFreeSubscription = () => {
         <div className="flex flex-col text-center md:text-left flex-1">
           <h1 className="text-2xl md:text-4xl font-black leading-tight text-[#f01671]  transition-all transform hover:scale-105 active:scale-95">
             Crie seu Anúncio <br className="md:hidden" />
-            <span className="text-purple-600">agora mesmo.</span>
+            <span className="text-purple-600">agora mesmo </span><br className="md:hidden" />
+            <span className="text-gray-700">e tenha seu negócio na vitrine do mundo.</span>            
           </h1>
+          <span className="text-gray-600 transition-all transform hover:scale-105 active:scale-95">Atraia novos clientes, divulgue seus serviços e aumente suas oportunidades.</span>
           <p className="text-3xl md:text-5xl text-orange-500 font-extrabold mt-2 transition-all transform hover:scale-105 active:scale-95">
             É de graça!
           </p>
