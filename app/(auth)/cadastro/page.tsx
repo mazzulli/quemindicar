@@ -17,6 +17,9 @@ import { ImageUpload } from "@/components/image-upload"
 import { useRouter } from "next/navigation"
 import { useSession } from "next-auth/react"
 import Header from "@/components/header"
+import { generatePassword, hashPassword } from "@/lib/utils"
+import { createUser, UserProps } from "@/lib/actions/users"
+import SendMail from "@/app/api/sendEmail";
 
 interface Category {
   id: number
@@ -47,6 +50,7 @@ export default function CadastroPage() {
   const [submitting, setSubmitting] = useState(false)
   const [selectedImage, setSelectedImage] = useState<File | null>(null)
   const [success, setSuccess] = useState(false)
+  const [userError, setUserError] = useState(false)
 
   const [formData, setFormData] = useState({
     title: "",
@@ -142,6 +146,45 @@ export default function CadastroPage() {
     }
   }
 
+  const handleSendEmail = async (customerEmail: string) => {
+    const mailIndex = customerEmail.indexOf('@')
+    const initialPassword = 'qi@' + customerEmail.substring(0, mailIndex) + generatePassword()
+    const hashedPassword = await hashPassword(initialPassword)
+
+    const data: UserProps = {
+        name: "Cliente Quem Indicar",
+        email: customerEmail,
+        passwordHash: hashedPassword,
+        role: "Customer",
+        active: true,
+        stripeCustomerId: "Free customer",
+    } 
+    // gravar os dados do novo usuário
+    const user = await createUser(data)  
+
+    if (user?.error) {
+      setUserError(true)
+      toast({
+        title: "Ops",
+        description: "O seu anúncio foi criado e está em análise, mas..." + user.error,
+        variant: "default",
+      })
+    }else{
+      const response = await SendMail({newSecret: initialPassword, name: "Cliente Quem Indicar", email: customerEmail});
+      if (response?.error) {
+        toast({
+          title: "Ops!",
+          description: "Parece que houve um erro ao enviar o e-mail. Por favor, tente novamente mais tarde.",
+        })
+      }else{
+          toast({
+            title: "Sucesso!",
+            description: "E-mail enviado com sucesso! Verifique sua caixa de entrada ou spam.",
+          })          
+      }
+    }
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
@@ -183,10 +226,6 @@ export default function CadastroPage() {
         submitFormData.append("photo", selectedImage)
       }
       
-      // submitFormData.append("email", session?.user?.email || "sememail@email.com.br")
-      console.log("Submitting form data:", Object.fromEntries(submitFormData.entries()))
-      console.log("Submitting form data sem formatação:",JSON.stringify(Object.fromEntries(submitFormData.entries())))
-
       const result = await createProvider(submitFormData)
 
       if (result.success) {
@@ -218,7 +257,9 @@ export default function CadastroPage() {
           tiktok: "",
         })
         setSelectedImage(null)
+        handleSendEmail(formData.email)
         setSuccess(true)
+
         // router.push("/cadastro")
       } else {
         // result.error é uma string JSON
@@ -231,7 +272,6 @@ export default function CadastroPage() {
         })
       }
     } catch (error: {success?: boolean, toString: () => string, error: string | null} | any) {
-      console.error("Error creating provider:", error)
       toast({
         title: "Ops. Encontramos um problema ao criar o prestador",
         description: {error}?.toString() || "Tente novamente mais tarde, ou entre em contato com nosso atendimento.",        
@@ -606,3 +646,4 @@ export default function CadastroPage() {
       </>
   )
 }
+
