@@ -173,11 +173,16 @@ export async function createProvider(formData: FormData) {
       isActive: false,
     };
 
-    console.log("Dados recebidos de email: ", formData.get("email") as string);
+    const email = formData.get("email")?.toString().trim() as string;
+
+    if (!email) {
+      return {
+        success: false,
+        error: "Informe um email válido",
+      };
+    }
 
     const validatedData = providerSchema.parse(data);
-
-    console.log("Dados validados: ", validatedData);
 
     // Check if category exists
     const category = await prisma.category.findUnique({
