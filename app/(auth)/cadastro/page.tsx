@@ -26,6 +26,13 @@ interface Category {
   updatedAt: Date
 }
 
+interface ZodValidationError {
+  validation: string;
+  code: string;
+  message: string;
+  path: string[];
+}
+
 export default function CadastroPage() {  
   const { data: session, status } =  useSession()
   const router = useRouter()
@@ -47,7 +54,7 @@ export default function CadastroPage() {
     categoryId: "",
     description: "",
     phone: "",
-    email: session?.user?.email || "sememail@email.com.br",
+    email: session?.user?.email || "",
     zipCode: "",
     address: "",
     number: "",
@@ -147,6 +154,15 @@ export default function CadastroPage() {
       return
     }
 
+    if (!formData.email) {
+      toast({
+        title: "Erro",
+        description: "Por favor, informe um e-mail válido.",
+        variant: "destructive",
+      })
+      return
+    }
+
     setSubmitting(true)
 
     try {
@@ -167,7 +183,7 @@ export default function CadastroPage() {
         submitFormData.append("photo", selectedImage)
       }
       
-      submitFormData.append("email", session?.user?.email || "sememail@email.com.br")
+      // submitFormData.append("email", session?.user?.email || "sememail@email.com.br")
       console.log("Submitting form data:", Object.fromEntries(submitFormData.entries()))
       console.log("Submitting form data sem formatação:",JSON.stringify(Object.fromEntries(submitFormData.entries())))
 
@@ -186,7 +202,7 @@ export default function CadastroPage() {
           categoryId: "",
           description: "",
           phone: "",
-          email: session?.user?.email || "sememail@email.com.br",
+          email: session?.user?.email || "",
           zipCode: "",
           address: "",
           number: "",
@@ -205,13 +221,17 @@ export default function CadastroPage() {
         setSuccess(true)
         // router.push("/cadastro")
       } else {
+        // result.error é uma string JSON
+        const parsedErrors = JSON.parse(result.error!) as ZodValidationError[];
+        const errorMessage = parsedErrors[0]?.message;        
         toast({
           title: "Ops",
-          description: result.error,
+          description: errorMessage,
           variant: "destructive",
         })
       }
     } catch (error: {success?: boolean, toString: () => string, error: string | null} | any) {
+      console.error("Error creating provider:", error)
       toast({
         title: "Ops. Encontramos um problema ao criar o prestador",
         description: {error}?.toString() || "Tente novamente mais tarde, ou entre em contato com nosso atendimento.",        
